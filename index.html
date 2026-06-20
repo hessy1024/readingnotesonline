@@ -8,8 +8,7 @@
     <meta name="apple-mobile-web-app-status-bar-style" content="default">
     <meta name="apple-mobile-web-app-title" content="读书笔记">
     <meta name="theme-color" content="#f8f5f0">
-    
-    <!-- PWA manifest -->
+
     <script>
         (() => {
             const manifest = {
@@ -22,36 +21,24 @@
         })();
     </script>
 
-    <!-- Firebase Compat SDKs (从 CDN 引入，适合浏览器直接使用) -->
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
 
     <style>
         :root {
-            --bg: #f8f5f0;
-            --card-bg: #ffffff;
-            --text: #3d3226;
-            --text-secondary: #8c7b6b;
-            --border: #e8e0d5;
-            --accent: #b8864e;
-            --accent-hover: #9a6d3a;
-            --accent-light: #f5ede3;
-            --danger: #c0392b;
-            --shadow-sm: 0 1px 3px rgba(61,50,38,0.08);
-            --shadow-md: 0 4px 16px rgba(61,50,38,0.12);
-            --shadow-lg: 0 12px 40px rgba(61,50,38,0.2);
-            --radius-sm: 8px;
-            --radius: 12px;
-            --radius-lg: 16px;
-            --transition: 0.2s cubic-bezier(0.4,0,0.2,1);
+            --bg: #f8f5f0; --card-bg: #ffffff; --text: #3d3226; --text-secondary: #8c7b6b;
+            --border: #e8e0d5; --accent: #b8864e; --accent-hover: #9a6d3a; --accent-light: #f5ede3;
+            --danger: #c0392b; --shadow-sm: 0 1px 3px rgba(61,50,38,0.08);
+            --shadow-md: 0 4px 16px rgba(61,50,38,0.12); --shadow-lg: 0 12px 40px rgba(61,50,38,0.2);
+            --radius-sm: 8px; --radius: 12px; --radius-lg: 16px; --transition: 0.2s cubic-bezier(0.4,0,0.2,1);
             --font-serif: 'Georgia', 'Noto Serif SC', 'STSong', 'Songti SC', 'SimSun', serif;
             --font-sans: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif;
         }
         * { margin:0; padding:0; box-sizing:border-box; }
         body { font-family:var(--font-sans); background:var(--bg); color:var(--text); min-height:100vh; line-height:1.6; -webkit-font-smoothing:antialiased; }
         .app-container { max-width:680px; margin:0 auto; padding:16px 16px 120px; min-height:100vh; }
-        /* 头部 */
+
         .app-header { text-align:center; padding:28px 0 8px; position:sticky; top:0; z-index:10; background:linear-gradient(180deg, var(--bg) 70%, transparent 100%); backdrop-filter:blur(6px); -webkit-backdrop-filter:blur(6px); }
         .app-header .icon { font-size:42px; display:block; margin-bottom:2px; animation:float 3s ease-in-out infinite; }
         @keyframes float { 0%,100% { transform:translateY(0); } 50% { transform:translateY(-8px); } }
@@ -59,7 +46,7 @@
         .subtitle { font-size:13px; color:var(--text-secondary); letter-spacing:1px; }
         .auth-info { font-size:12px; color:var(--text-secondary); margin-top:4px; }
         .logout-btn { position:absolute; right:16px; top:16px; background:none; border:1px solid var(--border); padding:4px 12px; border-radius:20px; font-size:12px; cursor:pointer; color:var(--text-secondary); }
-        /* 搜索栏 */
+
         .search-bar { position:sticky; top:130px; z-index:9; background:var(--bg); padding:4px 0 8px; backdrop-filter:blur(6px); -webkit-backdrop-filter:blur(6px); }
         .search-input-wrap { position:relative; display:flex; align-items:center; }
         .search-icon { position:absolute; left:14px; font-size:17px; color:var(--text-secondary); pointer-events:none; }
@@ -68,19 +55,25 @@
         .search-clear { position:absolute; right:12px; width:28px; height:28px; border-radius:50%; background:#e8e0d5; border:none; color:#8c7b6b; font-size:14px; display:flex; align-items:center; justify-content:center; opacity:0; pointer-events:none; transform:scale(0.7); transition:var(--transition); }
         .search-clear.visible { opacity:1; pointer-events:auto; transform:scale(1); }
         .search-hint { font-size:12px; color:var(--text-secondary); margin-top:6px; text-align:center; }
+
+        /* 视图切换标签 */
+        .view-tabs { display:flex; gap:0; margin-top:10px; background:var(--card-bg); border-radius:24px; padding:4px; box-shadow:var(--shadow-sm); }
+        .view-tab { flex:1; text-align:center; padding:8px 16px; border-radius:20px; font-size:14px; font-weight:500; cursor:pointer; transition:var(--transition); color:var(--text-secondary); border:none; background:transparent; white-space:nowrap; letter-spacing:0.3px; }
+        .view-tab.active { background:var(--accent); color:#fff; font-weight:600; box-shadow:0 2px 8px rgba(184,134,78,0.25); }
+
         /* 备份提醒 */
         .reminder-banner { background:#fff8e7; border:1px solid #f0d89d; border-radius:12px; padding:12px 16px; margin-bottom:12px; display:flex; align-items:center; gap:12px; font-size:14px; color:#7c5e10; box-shadow:0 2px 8px rgba(184,134,78,0.08); }
         .reminder-banner .reminder-icon { font-size:24px; flex-shrink:0; }
         .reminder-banner .reminder-text { flex:1; line-height:1.4; }
         .reminder-banner .reminder-btn { padding:8px 18px; border-radius:20px; border:none; background:var(--accent); color:#fff; cursor:pointer; font-weight:600; font-size:13px; white-space:nowrap; flex-shrink:0; }
-        /* 分类筛选 */
+
         .category-filter { margin-top:8px; display:flex; gap:8px; overflow-x:auto; padding:4px 0 2px; scrollbar-width:thin; -webkit-overflow-scrolling:touch; }
         .category-filter::-webkit-scrollbar { height:4px; }
         .category-filter::-webkit-scrollbar-thumb { background:#d9cebd; border-radius:10px; }
         .filter-tag { flex-shrink:0; padding:6px 16px; border-radius:20px; border:1px solid var(--border); background:#faf7f2; font-size:13px; cursor:pointer; white-space:nowrap; color:var(--text-secondary); letter-spacing:0.3px; user-select:none; transition:var(--transition); }
         .filter-tag.active { background:var(--accent); border-color:var(--accent); color:#fff; font-weight:600; box-shadow:0 2px 8px rgba(184,134,78,0.25); }
         .filter-tag .count { margin-left:4px; font-size:11px; opacity:0.8; }
-        /* 笔记卡片 */
+
         .notes-list { display:flex; flex-direction:column; gap:12px; margin-top:8px; }
         .note-card { background:var(--card-bg); border-radius:var(--radius); padding:18px 20px; box-shadow:var(--shadow-sm); border:1px solid transparent; transition:var(--transition); animation:fadeInUp 0.35s ease forwards; opacity:0; }
         @keyframes fadeInUp { from { opacity:0; transform:translateY(16px); } to { opacity:1; transform:translateY(0); } }
@@ -97,11 +90,44 @@
         .btn-sm { padding:7px 14px; border-radius:20px; border:1px solid var(--border); background:#faf7f2; cursor:pointer; font-size:12px; color:var(--text-secondary); transition:var(--transition); white-space:nowrap; }
         .btn-sm.edit-btn:hover { background:#fdf6ed; border-color:var(--accent); color:var(--accent); }
         .btn-sm.delete-btn:hover { background:#fef5f5; border-color:#e8c4c4; color:var(--danger); }
-        /* 空状态 */
+
         .empty-state { text-align:center; padding:50px 20px; color:var(--text-secondary); animation:fadeInUp 0.5s ease; }
         .empty-state .empty-icon { font-size:64px; display:block; margin-bottom:16px; opacity:0.7; }
         .empty-state h3 { font-family:var(--font-serif); font-size:18px; margin-bottom:6px; color:var(--text); }
-        /* 底部工具栏 */
+
+        /* 统计视图 */
+        .stats-view { display:none; flex-direction:column; gap:16px; margin-top:8px; }
+        .stats-view.active { display:flex; }
+        .stat-cards { display:grid; grid-template-columns:1fr 1fr; gap:12px; }
+        .stat-card { background:var(--card-bg); border-radius:var(--radius); padding:18px 16px; box-shadow:var(--shadow-sm); text-align:center; }
+        .stat-card .stat-number { font-family:var(--font-serif); font-size:36px; font-weight:700; color:var(--accent); line-height:1.1; }
+        .stat-card .stat-label { font-size:12px; color:var(--text-secondary); margin-top:4px; letter-spacing:0.5px; }
+        .stat-card .stat-sub { font-size:11px; color:#b8a898; margin-top:2px; }
+        .stat-card.wide { grid-column:1 / -1; }
+        .monthly-chart { background:var(--card-bg); border-radius:var(--radius); padding:20px; box-shadow:var(--shadow-sm); }
+        .monthly-chart h3 { font-family:var(--font-serif); font-size:16px; margin-bottom:16px; color:var(--text); }
+        .chart-bars { display:flex; align-items:flex-end; gap:6px; height:160px; padding:0 4px; }
+        .chart-bar-wrap { flex:1; display:flex; flex-direction:column; align-items:center; height:100%; justify-content:flex-end; }
+        .chart-bar { width:100%; max-width:40px; border-radius:6px 6px 0 0; background:var(--accent); transition:height 0.4s ease; min-height:2px; position:relative; }
+        .chart-bar:hover { background:var(--accent-hover); }
+        .chart-bar.no-data { background:#e8e0d5; }
+        .chart-bar .bar-value { position:absolute; top:-20px; left:50%; transform:translateX(-50%); font-size:11px; font-weight:600; color:var(--text); white-space:nowrap; }
+        .chart-label { font-size:10px; color:var(--text-secondary); margin-top:8px; text-align:center; white-space:nowrap; }
+        .category-stats { background:var(--card-bg); border-radius:var(--radius); padding:20px; box-shadow:var(--shadow-sm); }
+        .category-stats h3 { font-family:var(--font-serif); font-size:16px; margin-bottom:14px; color:var(--text); }
+        .cat-stat-row { display:flex; align-items:center; gap:10px; padding:8px 0; border-bottom:1px solid #f5ede3; }
+        .cat-stat-row:last-child { border-bottom:none; }
+        .cat-stat-color { width:12px; height:12px; border-radius:50%; flex-shrink:0; }
+        .cat-stat-name { flex:1; font-size:14px; color:var(--text); }
+        .cat-stat-count { font-weight:600; color:var(--accent); font-size:14px; }
+        .cat-stat-bar-wrap { flex:2; height:6px; background:#f0e8db; border-radius:3px; overflow:hidden; }
+        .cat-stat-bar { height:100%; border-radius:3px; transition:width 0.4s ease; }
+        .monthly-book-list { background:var(--card-bg); border-radius:var(--radius); padding:20px; box-shadow:var(--shadow-sm); }
+        .monthly-book-list h3 { font-family:var(--font-serif); font-size:16px; margin-bottom:12px; color:var(--text); }
+        .monthly-book-item { padding:8px 0; border-bottom:1px solid #f5ede3; font-size:13px; color:var(--text-secondary); display:flex; align-items:center; gap:8px; }
+        .monthly-book-item:last-child { border-bottom:none; }
+        .monthly-book-item .mbi-date { font-size:11px; color:#b8a898; flex-shrink:0; width:45px; }
+
         .footer-toolbar { display:flex; flex-direction:column; align-items:center; gap:12px; padding:20px 0 30px; font-size:12px; color:var(--text-secondary); }
         .stats-bar span { font-weight:600; color:var(--accent); }
         .tool-buttons { display:flex; gap:10px; flex-wrap:wrap; justify-content:center; }
@@ -109,11 +135,11 @@
         .tool-btn:hover { background:var(--accent-light); border-color:var(--accent); color:var(--accent); }
         .tool-btn.import-btn::before { content:'📥'; font-size:14px; }
         .tool-btn.export-btn::before { content:'📤'; font-size:14px; }
-        /* FAB */
+
         .fab { position:fixed; bottom:28px; right:28px; width:56px; height:56px; border-radius:50%; background:var(--accent); color:#fff; border:none; cursor:pointer; font-size:28px; box-shadow:var(--shadow-lg); z-index:20; display:flex; align-items:center; justify-content:center; transition:var(--transition); }
         .fab:hover { background:var(--accent-hover); transform:scale(1.06); }
         .fab:active { transform:scale(0.94); }
-        /* 模态框 */
+
         .modal-overlay { position:fixed; inset:0; background:rgba(30,22,14,0.55); z-index:30; display:flex; align-items:flex-end; justify-content:center; animation:fadeIn 0.25s ease; backdrop-filter:blur(2px); }
         @keyframes fadeIn { from{opacity:0;} to{opacity:1;} }
         .modal-overlay.closing { animation:fadeOut 0.2s ease forwards; }
@@ -134,7 +160,7 @@
         .btn { flex:1; padding:13px 20px; border-radius:28px; border:none; cursor:pointer; font-size:15px; font-weight:600; transition:var(--transition); }
         .btn-primary { background:var(--accent); color:#fff; box-shadow:0 4px 14px rgba(184,134,78,0.3); }
         .btn-secondary { background:#f5f0e8; color:var(--text-secondary); border:1.5px solid var(--border); }
-        /* 分类管理 */
+
         .category-manager { margin-top:12px; border-top:1px dashed var(--border); padding-top:16px; }
         .category-list-item { display:flex; align-items:center; justify-content:space-between; padding:8px 4px; border-bottom:1px solid #f5ede3; font-size:14px; }
         .cat-color { width:14px; height:14px; border-radius:50%; margin-right:10px; flex-shrink:0; }
@@ -143,7 +169,7 @@
         .add-category-row { display:flex; gap:8px; margin-top:12px; }
         .add-category-row input { flex:1; padding:8px 12px; border:1.5px solid var(--border); border-radius:20px; font-size:14px; outline:none; }
         .add-category-row button { padding:8px 16px; border-radius:20px; border:none; background:var(--accent); color:#fff; cursor:pointer; font-weight:500; }
-        /* 登录界面 */
+
         .auth-container { display:flex; flex-direction:column; align-items:center; justify-content:center; min-height:100vh; padding:20px; }
         .auth-box { max-width:400px; width:100%; background:white; border-radius:16px; padding:30px; box-shadow:0 4px 24px rgba(0,0,0,0.1); }
         .auth-box input { width:100%; padding:12px; margin-bottom:10px; border:1px solid #ddd; border-radius:8px; font-size:14px; }
@@ -152,11 +178,17 @@
         .btn-auth-outline { background:white; color:var(--accent); border:1px solid var(--accent); }
         .btn-auth-secondary { background:#eee; color:#333; }
         .auth-error { color:red; text-align:center; margin-top:10px; font-size:14px; }
-        /* Toast */
+
         .toast { position:fixed; top:20px; left:50%; transform:translateX(-50%); background:#3d3226; color:#fff; padding:12px 24px; border-radius:28px; font-size:14px; z-index:50; animation:toastIn 0.3s ease, toastOut 0.3s ease 1.8s forwards; pointer-events:none; }
         @keyframes toastIn { from{opacity:0; transform:translateX(-50%) translateY(-20px);} to{opacity:1; transform:translateX(-50%) translateY(0);} }
         @keyframes toastOut { from{opacity:1;} to{opacity:0; transform:translateX(-50%) translateY(-20px);} }
         mark { background:#fef3c7; padding:2px 4px; border-radius:3px; color:#7c5e10; }
+
+        @media (max-width:400px) {
+            .stat-cards { grid-template-columns:1fr 1fr; }
+            .chart-bars { gap:3px; }
+            .chart-bar { max-width:28px; }
+        }
     </style>
 </head>
 <body>
@@ -181,13 +213,18 @@
             <p class="subtitle" id="userEmailDisplay">未登录</p>
             <button class="logout-btn" id="logoutBtn">退出</button>
         </header>
-        <div class="search-bar">
+        <div class="search-bar" id="searchBarArea">
             <div class="search-input-wrap">
                 <span class="search-icon">🔍</span>
                 <input type="text" class="search-input" id="searchInput" placeholder="搜索书名、作者或感想..." autocomplete="off">
                 <button class="search-clear" id="searchClear">✕</button>
             </div>
             <div class="category-filter" id="categoryFilter"></div>
+            <!-- 视图切换标签 -->
+            <div class="view-tabs" id="viewTabs">
+                <button class="view-tab active" data-view="notes">📋 笔记列表</button>
+                <button class="view-tab" data-view="stats">📊 阅读统计</button>
+            </div>
             <p class="search-hint">共 <span id="totalCount">0</span> 条笔记</p>
         </div>
         <div class="reminder-banner" id="reminderBanner" style="display:none;">
@@ -195,7 +232,31 @@
             <span class="reminder-text">📅 本月尚未备份读书笔记，建议立即导出备份以防数据丢失。</span>
             <button class="reminder-btn" id="reminderExportBtn">立即备份</button>
         </div>
+
+        <!-- 笔记列表视图 -->
         <div class="notes-list" id="notesList"></div>
+
+        <!-- 统计视图 -->
+        <div class="stats-view" id="statsView">
+            <!-- 概览卡片 -->
+            <div class="stat-cards" id="statCards"></div>
+            <!-- 月度趋势图 -->
+            <div class="monthly-chart" id="monthlyChart">
+                <h3>📈 近12个月阅读趋势</h3>
+                <div class="chart-bars" id="chartBars"></div>
+            </div>
+            <!-- 分类统计 -->
+            <div class="category-stats" id="categoryStats">
+                <h3>🏷️ 分类分布</h3>
+                <div id="catStatList"></div>
+            </div>
+            <!-- 本月阅读列表 -->
+            <div class="monthly-book-list" id="monthlyBookList">
+                <h3>📅 本月阅读书目</h3>
+                <div id="monthlyBooksContainer"></div>
+            </div>
+        </div>
+
         <div class="footer-toolbar">
             <div class="stats-bar">📖 已记录 <span id="statsCount">0</span> 本书的笔记</div>
             <div class="tool-buttons">
@@ -258,17 +319,16 @@
             firebase.initializeApp(firebaseConfig);
             const auth = firebase.auth();
             const db = firebase.firestore();
-
-            // 启用离线持久化（可选）
             db.enablePersistence().catch(() => {});
 
             // ==================== 全局状态 ====================
-            let currentUser = null;          // Firebase user 或匿名 { uid: 'local', isAnonymous: true }
+            let currentUser = null;
             let notes = [];
             let categories = [];
             let searchTerm = '';
             let activeCat = null;
             let editingId = null;
+            let currentView = 'notes'; // 'notes' | 'stats'
             let unsubscribeNotes = null;
             let unsubscribeCats = null;
 
@@ -279,129 +339,72 @@
             const hl = (t, q) => { if(!q) return esc(t); const re = new RegExp(`(${q.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')})`,'gi'); return esc(t).replace(re, '<mark>$1</mark>'); };
             const toast = m => { const t = document.createElement('div'); t.className='toast'; t.textContent=m; document.getElementById('toastContainer').appendChild(t); setTimeout(()=>t.remove(),2200); };
             const curMonth = () => { const d=new Date(); return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0'); };
+            const getMonthLabel = (ym) => { const [y,m] = ym.split('-'); return `${parseInt(m)}月`; };
+            const getFullMonthLabel = (ym) => { const [y,m] = ym.split('-'); return `${y}年${parseInt(m)}月`; };
 
             // ==================== DOM 引用 ====================
             const $ = id => document.getElementById(id);
             const els = {
-                authContainer: $('authContainer'),
-                appContainer: $('appContainer'),
-                authEmail: $('authEmail'),
-                authPassword: $('authPassword'),
-                loginBtn: $('loginBtn'),
-                registerBtn: $('registerBtn'),
-                authError: $('authError'),
-                anonymousBtn: $('anonymousBtn'),
-                userEmailDisplay: $('userEmailDisplay'),
-                logoutBtn: $('logoutBtn'),
-                notesList: $('notesList'),
-                searchInput: $('searchInput'),
-                searchClear: $('searchClear'),
-                totalCount: $('totalCount'),
-                statsCount: $('statsCount'),
-                categoryFilter: $('categoryFilter'),
-                reminderBanner: $('reminderBanner'),
-                reminderExportBtn: $('reminderExportBtn'),
-                exportBtn: $('exportBtn'),
-                importBtn: $('importBtn'),
-                importFileInput: $('importFileInput'),
-                fabBtn: $('fabBtn'),
-                modalOverlay: $('modalOverlay'),
-                modalTitle: $('modalTitle'),
-                noteForm: $('noteForm'),
-                noteId: $('noteId'),
-                bookTitle: $('bookTitle'),
-                bookAuthor: $('bookAuthor'),
-                bookDate: $('bookDate'),
-                bookCategory: $('bookCategory'),
-                bookNotes: $('bookNotes'),
-                submitBtn: $('submitBtn'),
-                categoryManager: $('categoryManager'),
-                categoryListContainer: $('categoryListContainer'),
-                newCategoryName: $('newCategoryName'),
-                addCategoryBtn: $('addCategoryBtn'),
-                closeCategoryManagerBtn: $('closeCategoryManager'),
-                cancelBtn: $('cancelBtn'),
-                manageCategoryBtn: $('manageCategoryBtn')
+                authContainer: $('authContainer'), appContainer: $('appContainer'),
+                authEmail: $('authEmail'), authPassword: $('authPassword'),
+                loginBtn: $('loginBtn'), registerBtn: $('registerBtn'), authError: $('authError'),
+                anonymousBtn: $('anonymousBtn'), userEmailDisplay: $('userEmailDisplay'), logoutBtn: $('logoutBtn'),
+                notesList: $('notesList'), statsView: $('statsView'), viewTabs: $('viewTabs'),
+                searchInput: $('searchInput'), searchClear: $('searchClear'),
+                totalCount: $('totalCount'), statsCount: $('statsCount'),
+                categoryFilter: $('categoryFilter'), searchBarArea: $('searchBarArea'),
+                reminderBanner: $('reminderBanner'), reminderExportBtn: $('reminderExportBtn'),
+                exportBtn: $('exportBtn'), importBtn: $('importBtn'), importFileInput: $('importFileInput'),
+                fabBtn: $('fabBtn'), modalOverlay: $('modalOverlay'), modalTitle: $('modalTitle'),
+                noteForm: $('noteForm'), noteId: $('noteId'), bookTitle: $('bookTitle'),
+                bookAuthor: $('bookAuthor'), bookDate: $('bookDate'), bookCategory: $('bookCategory'),
+                bookNotes: $('bookNotes'), submitBtn: $('submitBtn'),
+                categoryManager: $('categoryManager'), categoryListContainer: $('categoryListContainer'),
+                newCategoryName: $('newCategoryName'), addCategoryBtn: $('addCategoryBtn'),
+                closeCategoryManagerBtn: $('closeCategoryManager'), cancelBtn: $('cancelBtn'),
+                manageCategoryBtn: $('manageCategoryBtn'),
+                statCards: $('statCards'), chartBars: $('chartBars'), catStatList: $('catStatList'),
+                monthlyBooksContainer: $('monthlyBooksContainer'),
+                monthlyChart: $('monthlyChart'), categoryStats: $('categoryStats'),
+                monthlyBookList: $('monthlyBookList')
             };
 
             // ==================== 认证与模式切换 ====================
-            function showAuth() {
-                els.authContainer.style.display = 'flex';
-                els.appContainer.style.display = 'none';
-            }
+            function showAuth() { els.authContainer.style.display = 'flex'; els.appContainer.style.display = 'none'; }
             function showApp() {
-                els.authContainer.style.display = 'none';
-                els.appContainer.style.display = 'block';
-                if (currentUser) {
-                    els.userEmailDisplay.textContent = currentUser.isAnonymous ? '📁 本地模式（未同步）' : `📧 ${currentUser.email}`;
-                }
+                els.authContainer.style.display = 'none'; els.appContainer.style.display = 'block';
+                if (currentUser) els.userEmailDisplay.textContent = currentUser.isAnonymous ? '📁 本地模式（未同步）' : `📧 ${currentUser.email}`;
             }
-
-            // 登录/注册
             els.loginBtn.addEventListener('click', async () => {
-                const email = els.authEmail.value.trim();
-                const pass = els.authPassword.value;
+                const email = els.authEmail.value.trim(), pass = els.authPassword.value;
                 if (!email || !pass) { els.authError.textContent = '请填写邮箱和密码'; return; }
-                try {
-                    await auth.signInWithEmailAndPassword(email, pass);
-                    els.authError.textContent = '';
-                } catch (e) { els.authError.textContent = e.message; }
+                try { await auth.signInWithEmailAndPassword(email, pass); els.authError.textContent = ''; }
+                catch (e) { els.authError.textContent = e.message; }
             });
             els.registerBtn.addEventListener('click', async () => {
-                const email = els.authEmail.value.trim();
-                const pass = els.authPassword.value;
+                const email = els.authEmail.value.trim(), pass = els.authPassword.value;
                 if (!email || !pass) { els.authError.textContent = '请填写邮箱和密码'; return; }
                 if (pass.length < 6) { els.authError.textContent = '密码至少6位'; return; }
-                try {
-                    await auth.createUserWithEmailAndPassword(email, pass);
-                    els.authError.textContent = '';
-                } catch (e) { els.authError.textContent = e.message; }
+                try { await auth.createUserWithEmailAndPassword(email, pass); els.authError.textContent = ''; }
+                catch (e) { els.authError.textContent = e.message; }
             });
-            els.anonymousBtn.addEventListener('click', () => {
-                currentUser = { uid: 'local_anonymous', isAnonymous: true };
-                showApp();
-                startLocalMode();
-            });
-            els.logoutBtn.addEventListener('click', () => {
-                if (currentUser && currentUser.isAnonymous) {
-                    currentUser = null;
-                    stopSync();
-                    showAuth();
-                } else {
-                    auth.signOut();
-                }
-            });
-
-            // 监听认证状态变化
+            els.anonymousBtn.addEventListener('click', () => { currentUser = { uid: 'local_anonymous', isAnonymous: true }; showApp(); startLocalMode(); });
+            els.logoutBtn.addEventListener('click', () => { if (currentUser && currentUser.isAnonymous) { currentUser = null; stopSync(); showAuth(); } else { auth.signOut(); } });
             auth.onAuthStateChanged(user => {
-                if (user) {
-                    currentUser = user;
-                    showApp();
-                    startCloudSync();
-                } else {
-                    // 登出或未登录，如果之前是匿名模式则保持界面，否则显示登录
-                    if (currentUser && currentUser.isAnonymous) {
-                        // 保持匿名模式
-                    } else {
-                        currentUser = null;
-                        stopSync();
-                        showAuth();
-                    }
-                }
+                if (user) { currentUser = user; showApp(); startCloudSync(); }
+                else { if (currentUser && currentUser.isAnonymous) {} else { currentUser = null; stopSync(); showAuth(); } }
             });
 
             // ==================== 云端同步 ====================
             function startCloudSync() {
                 if (!currentUser || currentUser.isAnonymous) return;
-                stopSync(); // 先停止之前的监听
+                stopSync();
                 const uid = currentUser.uid;
-                // 监听分类
                 const catsRef = db.collection('users').doc(uid).collection('categories');
                 unsubscribeCats = catsRef.onSnapshot(snapshot => {
                     categories = [];
                     snapshot.forEach(doc => categories.push({ id: doc.id, ...doc.data() }));
                     if (categories.length === 0) {
-                        // 首次自动创建默认分类
                         const defaults = [
                             { name: '未分类', color: '#b8a898', isDefault: true },
                             { name: '文学', color: '#c47e5a', isDefault: true },
@@ -413,357 +416,324 @@
                             { name: '生活', color: '#c49a6c', isDefault: true }
                         ];
                         const batch = db.batch();
-                        defaults.forEach(c => {
-                            const ref = catsRef.doc(c.name === '未分类' ? 'uncategorized' : c.name.toLowerCase());
-                            batch.set(ref, c);
-                        });
+                        defaults.forEach(c => { const ref = catsRef.doc(c.name === '未分类' ? 'uncategorized' : c.name.toLowerCase()); batch.set(ref, c); });
                         batch.commit();
                     }
                     renderAll();
                 });
-                // 监听笔记
                 const notesRef = db.collection('users').doc(uid).collection('notes');
                 unsubscribeNotes = notesRef.orderBy('createdAt', 'desc').onSnapshot(snapshot => {
                     notes = [];
-                    snapshot.forEach(doc => {
-                        notes.push({ id: doc.id, ...doc.data() });
-                    });
+                    snapshot.forEach(doc => notes.push({ id: doc.id, ...doc.data() }));
                     renderAll();
                 });
             }
-            function stopSync() {
-                if (unsubscribeNotes) { unsubscribeNotes(); unsubscribeNotes = null; }
-                if (unsubscribeCats) { unsubscribeCats(); unsubscribeCats = null; }
-            }
+            function stopSync() { if (unsubscribeNotes) { unsubscribeNotes(); unsubscribeNotes = null; } if (unsubscribeCats) { unsubscribeCats(); unsubscribeCats = null; } }
 
-            // 本地模式
             function startLocalMode() {
                 stopSync();
                 notes = JSON.parse(localStorage.getItem('local_notes') || '[]');
                 categories = JSON.parse(localStorage.getItem('local_categories') || '[]');
                 if (categories.length === 0) {
                     categories = [
-                        { id: 'uncategorized', name: '未分类', color: '#b8a898', isDefault: true },
-                        { id: 'literature', name: '文学', color: '#c47e5a', isDefault: true },
-                        { id: 'history', name: '历史', color: '#8b5e3c', isDefault: true },
-                        { id: 'tech', name: '科技', color: '#5d7b6f', isDefault: true },
-                        { id: 'philosophy', name: '哲学', color: '#7b6b8a', isDefault: true },
-                        { id: 'psychology', name: '心理', color: '#b87a6b', isDefault: true },
-                        { id: 'business', name: '商业', color: '#6d8a7d', isDefault: true },
-                        { id: 'life', name: '生活', color: '#c49a6c', isDefault: true }
+                        { id:'uncategorized',name:'未分类',color:'#b8a898',isDefault:true },
+                        { id:'literature',name:'文学',color:'#c47e5a',isDefault:true },
+                        { id:'history',name:'历史',color:'#8b5e3c',isDefault:true },
+                        { id:'tech',name:'科技',color:'#5d7b6f',isDefault:true },
+                        { id:'philosophy',name:'哲学',color:'#7b6b8a',isDefault:true },
+                        { id:'psychology',name:'心理',color:'#b87a6b',isDefault:true },
+                        { id:'business',name:'商业',color:'#6d8a7d',isDefault:true },
+                        { id:'life',name:'生活',color:'#c49a6c',isDefault:true }
                     ];
                 }
                 renderAll();
             }
-            function saveLocal() {
-                localStorage.setItem('local_notes', JSON.stringify(notes));
-                localStorage.setItem('local_categories', JSON.stringify(categories));
+            function saveLocal() { localStorage.setItem('local_notes', JSON.stringify(notes)); localStorage.setItem('local_categories', JSON.stringify(categories)); }
+
+            // ==================== 视图切换 ====================
+            els.viewTabs.querySelectorAll('.view-tab').forEach(tab => {
+                tab.addEventListener('click', () => {
+                    currentView = tab.dataset.view;
+                    els.viewTabs.querySelectorAll('.view-tab').forEach(t => t.classList.remove('active'));
+                    tab.classList.add('active');
+                    updateViewVisibility();
+                });
+            });
+            function updateViewVisibility() {
+                if (currentView === 'notes') {
+                    els.notesList.style.display = '';
+                    els.statsView.classList.remove('active');
+                    els.fabBtn.style.display = '';
+                } else {
+                    els.notesList.style.display = 'none';
+                    els.statsView.classList.add('active');
+                    els.fabBtn.style.display = '';
+                    renderStats();
+                }
             }
 
-            // ==================== 渲染 ====================
+            // ==================== 统计渲染 ====================
+            function renderStats() {
+                const now = new Date();
+                const thisYear = now.getFullYear();
+                const thisMonth = String(now.getMonth() + 1).padStart(2, '0');
+                const thisYM = `${thisYear}-${thisMonth}`;
+
+                // ---- 概览卡片 ----
+                const totalBooks = notes.length;
+                const monthNotes = notes.filter(n => n.date && n.date.startsWith(thisYM));
+                const monthCount = monthNotes.length;
+                const yearNotes = notes.filter(n => n.date && n.date.startsWith(`${thisYear}-`));
+                const yearCount = yearNotes.length;
+                const catSet = new Set(notes.map(n => n.categoryId));
+                const catCount = catSet.size;
+
+                els.statCards.innerHTML = `
+                    <div class="stat-card">
+                        <div class="stat-number">${totalBooks}</div>
+                        <div class="stat-label">📚 总笔记数</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number">${monthCount}</div>
+                        <div class="stat-label">📅 本月新增</div>
+                        <div class="stat-sub">${thisYear}年${parseInt(thisMonth)}月</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number">${yearCount}</div>
+                        <div class="stat-label">📆 今年累计</div>
+                        <div class="stat-sub">${thisYear}年</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number">${catCount}</div>
+                        <div class="stat-label">🏷️ 涵盖分类</div>
+                    </div>
+                `;
+
+                // ---- 近12个月趋势图 ----
+                const last12Months = [];
+                for (let i = 11; i >= 0; i--) {
+                    const d = new Date(thisYear, now.getMonth() - i, 1);
+                    last12Months.push(`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}`);
+                }
+                const monthlyCounts = {};
+                last12Months.forEach(ym => monthlyCounts[ym] = 0);
+                notes.forEach(n => {
+                    if (n.date) {
+                        const ym = n.date.slice(0, 7);
+                        if (monthlyCounts[ym] !== undefined) monthlyCounts[ym]++;
+                    }
+                });
+                const maxCount = Math.max(1, ...Object.values(monthlyCounts));
+                els.chartBars.innerHTML = last12Months.map(ym => {
+                    const count = monthlyCounts[ym];
+                    const height = Math.max(4, (count / maxCount) * 140);
+                    const isCurrent = ym === thisYM;
+                    return `<div class="chart-bar-wrap">
+                        <div class="chart-bar${count===0?' no-data':''}" style="height:${height}px;${isCurrent?'background:'+(count>0?'var(--accent-hover)':'#d5c8b8'):''}">
+                            ${count > 0 ? `<span class="bar-value">${count}</span>` : ''}
+                        </div>
+                        <div class="chart-label">${getMonthLabel(ym)}</div>
+                    </div>`;
+                }).join('');
+
+                // ---- 分类分布 ----
+                const catCounts = {};
+                notes.forEach(n => { catCounts[n.categoryId] = (catCounts[n.categoryId] || 0) + 1; });
+                const sortedCats = [...categories].sort((a,b) => (catCounts[b.id]||0) - (catCounts[a.id]||0));
+                const catMax = Math.max(1, ...Object.values(catCounts));
+                els.catStatList.innerHTML = sortedCats.map(c => {
+                    const cnt = catCounts[c.id] || 0;
+                    const pct = totalBooks > 0 ? Math.round(cnt / totalBooks * 100) : 0;
+                    return `<div class="cat-stat-row">
+                        <span class="cat-stat-color" style="background:${c.color};"></span>
+                        <span class="cat-stat-name">${esc(c.name)}</span>
+                        <span class="cat-stat-count">${cnt}本</span>
+                        <span class="cat-stat-bar-wrap"><span class="cat-stat-bar" style="width:${(cnt/catMax)*100}%;background:${c.color};"></span></span>
+                        <span style="font-size:11px;color:#b8a898;width:32px;text-align:right;">${pct}%</span>
+                    </div>`;
+                }).join('');
+
+                // ---- 本月阅读书目 ----
+                if (monthNotes.length === 0) {
+                    els.monthlyBooksContainer.innerHTML = '<p style="color:var(--text-secondary);font-size:14px;text-align:center;padding:8px;">本月暂无阅读记录 📭</p>';
+                } else {
+                    els.monthlyBooksContainer.innerHTML = monthNotes.sort((a,b) => (a.date < b.date ? 1 : -1)).map(n => {
+                        const cat = categories.find(c => c.id === n.categoryId);
+                        return `<div class="monthly-book-item">
+                            <span class="mbi-date">${n.date ? n.date.slice(5) : '--'}</span>
+                            <span>📖 ${esc(n.title)}${n.author ? ' - ' + esc(n.author) : ''}</span>
+                            ${cat ? `<span class="category-badge" style="background:${cat.color}20;color:${cat.color};border:1px solid ${cat.color}40;font-size:10px;margin-left:auto;flex-shrink:0;">${esc(cat.name)}</span>` : ''}
+                        </div>`;
+                    }).join('');
+                }
+            }
+
+            // ==================== 全量渲染 ====================
             function renderAll() {
                 renderCategoryFilter();
                 renderCategorySelect();
-                renderNotes();
+                if (currentView === 'notes') renderNotes();
+                else renderStats();
                 updateReminder();
                 els.totalCount.textContent = notes.length;
                 els.statsCount.textContent = notes.length;
+                updateViewVisibility();
+            }
+            function updateViewVisibility() {
+                if (currentView === 'notes') {
+                    els.notesList.style.display = '';
+                    els.statsView.classList.remove('active');
+                    renderNotes();
+                } else {
+                    els.notesList.style.display = 'none';
+                    els.statsView.classList.add('active');
+                    renderStats();
+                }
             }
 
             function renderCategoryFilter() {
-                const counts = {};
-                notes.forEach(n => { counts[n.categoryId] = (counts[n.categoryId] || 0) + 1; });
-                let html = `<span class="filter-tag ${activeCat === null ? 'active' : ''}" data-cat="">全部<span class="count">${notes.length}</span></span>`;
-                categories.forEach(c => {
-                    html += `<span class="filter-tag ${activeCat === c.id ? 'active' : ''}" data-cat="${c.id}">${esc(c.name)}<span class="count">${counts[c.id] || 0}</span></span>`;
-                });
+                const counts = {}; notes.forEach(n => { counts[n.categoryId] = (counts[n.categoryId] || 0) + 1; });
+                let html = `<span class="filter-tag ${activeCat===null?'active':''}" data-cat="">全部<span class="count">${notes.length}</span></span>`;
+                categories.forEach(c => { html += `<span class="filter-tag ${activeCat===c.id?'active':''}" data-cat="${c.id}">${esc(c.name)}<span class="count">${counts[c.id]||0}</span></span>`; });
                 els.categoryFilter.innerHTML = html;
-                els.categoryFilter.querySelectorAll('.filter-tag').forEach(tag => {
-                    tag.onclick = () => {
-                        activeCat = tag.dataset.cat || null;
-                        renderAll();
-                    };
-                });
+                els.categoryFilter.querySelectorAll('.filter-tag').forEach(tag => { tag.onclick = () => { activeCat = tag.dataset.cat || null; renderAll(); }; });
             }
-
-            function renderCategorySelect() {
-                els.bookCategory.innerHTML = categories.map(c => `<option value="${c.id}">${esc(c.name)}</option>`).join('');
-            }
-
+            function renderCategorySelect() { els.bookCategory.innerHTML = categories.map(c => `<option value="${c.id}">${esc(c.name)}</option>`).join(''); }
             function renderNotes() {
                 let filtered = [...notes];
                 if (searchTerm) filtered = filtered.filter(n => n.title.toLowerCase().includes(searchTerm) || n.author.toLowerCase().includes(searchTerm) || n.notes.toLowerCase().includes(searchTerm));
                 if (activeCat) filtered = filtered.filter(n => n.categoryId === activeCat);
-                // 排序（已由监听排序，但本地模式需手动）
-                filtered.sort((a,b) => b.createdAt - a.createdAt);
-
+                filtered.sort((a,b) => (b.createdAt||0) - (a.createdAt||0));
                 if (filtered.length === 0 && notes.length === 0) {
-                    els.notesList.innerHTML = '<div class="empty-state"><span class="empty-icon">📝</span><h3>还没有读书笔记</h3><p>点击右下角 ＋ 记录第一条吧</p></div>';
-                    return;
+                    els.notesList.innerHTML = '<div class="empty-state"><span class="empty-icon">📝</span><h3>还没有读书笔记</h3><p>点击右下角 ＋ 记录第一条吧</p></div>'; return;
                 }
                 if (filtered.length === 0) {
-                    els.notesList.innerHTML = '<div class="empty-state"><span class="empty-icon">🔍</span><h3>没有匹配的笔记</h3></div>';
-                    return;
+                    els.notesList.innerHTML = '<div class="empty-state"><span class="empty-icon">🔍</span><h3>没有匹配的笔记</h3></div>'; return;
                 }
-
-                els.notesList.innerHTML = filtered.map((n, i) => {
+                els.notesList.innerHTML = filtered.map((n,i) => {
                     const cat = categories.find(c => c.id === n.categoryId) || categories.find(c => c.id === 'uncategorized');
-                    const catName = cat ? cat.name : '未分类';
-                    const catColor = cat ? cat.color : '#b8a898';
-                    const emoji = ['📖','📚','📕','📗','📘','📙','📓','📔','📒','🪶'][i % 10];
+                    const catName = cat ? cat.name : '未分类'; const catColor = cat ? cat.color : '#b8a898';
+                    const emoji = ['📖','📚','📕','📗','📘','📙','📓','📔','📒','🪶'][i%10];
                     return `<div class="note-card" style="animation-delay:${i*0.04}s;">
-                        <div class="card-header">
-                            <span class="book-icon">${emoji}</span>
-                            <div class="book-info">
-                                <div class="book-title">${hl(n.title, searchTerm)}</div>
-                                ${n.author ? `<div class="book-author">${hl(n.author, searchTerm)}</div>` : ''}
-                                <span class="category-badge" style="background:${catColor}20;color:${catColor};border:1px solid ${catColor}40;">${esc(catName)}</span>
-                            </div>
-                            <span class="card-date">${fmtDate(n.date)}</span>
-                        </div>
-                        <div class="card-notes">${hl(n.notes, searchTerm)}</div>
-                        <div class="card-actions">
-                            <button class="btn-sm edit-btn" data-id="${n.id}">✏️</button>
-                            <button class="btn-sm delete-btn" data-id="${n.id}">🗑</button>
-                        </div>
+                        <div class="card-header"><span class="book-icon">${emoji}</span><div class="book-info"><div class="book-title">${hl(n.title,searchTerm)}</div>${n.author?`<div class="book-author">${hl(n.author,searchTerm)}</div>`:''}<span class="category-badge" style="background:${catColor}20;color:${catColor};border:1px solid ${catColor}40;">${esc(catName)}</span></div><span class="card-date">${fmtDate(n.date)}</span></div>
+                        <div class="card-notes">${hl(n.notes,searchTerm)}</div>
+                        <div class="card-actions"><button class="btn-sm edit-btn" data-id="${n.id}">✏️</button><button class="btn-sm delete-btn" data-id="${n.id}">🗑</button></div>
                     </div>`;
                 }).join('');
                 els.notesList.querySelectorAll('.edit-btn').forEach(b => b.onclick = () => openEdit(b.dataset.id));
                 els.notesList.querySelectorAll('.delete-btn').forEach(b => b.onclick = () => delNote(b.dataset.id));
             }
-
             function renderCategoryManager() {
                 els.categoryListContainer.innerHTML = categories.map(c => `
-                    <div class="category-list-item">
-                        <span class="cat-color" style="background:${c.color};"></span>
-                        <span class="cat-name">${esc(c.name)}</span>
-                        <span class="cat-actions">
-                            ${!c.isDefault ? `<button class="rename-cat-btn" data-id="${c.id}">✏️</button><button class="delete-cat-btn" data-id="${c.id}">🗑️</button>` : '<span style="font-size:11px;color:#aaa;">系统</span>'}
-                        </span>
-                    </div>`).join('');
-                els.categoryListContainer.querySelectorAll('.rename-cat-btn').forEach(b => {
-                    b.onclick = () => {
-                        const id = b.dataset.id;
-                        const oldName = categories.find(c => c.id === id)?.name;
-                        const newName = prompt('新名称：', oldName);
-                        if (newName && newName.trim() !== oldName) renameCat(id, newName.trim());
-                    };
-                });
-                els.categoryListContainer.querySelectorAll('.delete-cat-btn').forEach(b => {
-                    b.onclick = () => delCat(b.dataset.id);
-                });
+                    <div class="category-list-item"><span class="cat-color" style="background:${c.color};"></span><span class="cat-name">${esc(c.name)}</span><span class="cat-actions">${!c.isDefault?`<button class="rename-cat-btn" data-id="${c.id}">✏️</button><button class="delete-cat-btn" data-id="${c.id}">🗑️</button>`:'<span style="font-size:11px;color:#aaa;">系统</span>'}</span></div>`).join('');
+                els.categoryListContainer.querySelectorAll('.rename-cat-btn').forEach(b => { b.onclick = () => { const id=b.dataset.id; const oldName=categories.find(c=>c.id===id)?.name; const newName=prompt('新名称：',oldName); if(newName&&newName.trim()!==oldName) renameCat(id,newName.trim()); }; });
+                els.categoryListContainer.querySelectorAll('.delete-cat-btn').forEach(b => { b.onclick = () => delCat(b.dataset.id); });
             }
-
-            // ==================== 备份提醒 ====================
-            function updateReminder() {
-                const lastBackup = localStorage.getItem('last_backup_month');
-                els.reminderBanner.style.display = (lastBackup === curMonth()) ? 'none' : 'flex';
-            }
-            els.reminderExportBtn.addEventListener('click', exportData);
+            function updateReminder() { const lb = localStorage.getItem('last_backup_month'); els.reminderBanner.style.display = (lb===curMonth())?'none':'flex'; }
 
             // ==================== 导出/导入 ====================
             function exportData() {
-                const data = { version: 1, exportedAt: new Date().toISOString(), categories, notes };
-                const blob = new Blob([JSON.stringify(data, null, 2)], {type:'application/json'});
-                const a = document.createElement('a');
-                a.href = URL.createObjectURL(blob);
-                a.download = `读书笔记备份_${today()}.json`;
-                a.click();
-                localStorage.setItem('last_backup_month', curMonth());
-                updateReminder();
-                toast('📤 备份已下载，本月提醒已解除');
+                const data = { version:1, exportedAt:new Date().toISOString(), categories, notes };
+                const blob = new Blob([JSON.stringify(data,null,2)],{type:'application/json'});
+                const a = document.createElement('a'); a.href = URL.createObjectURL(blob);
+                a.download = `读书笔记备份_${today()}.json`; a.click();
+                localStorage.setItem('last_backup_month', curMonth()); updateReminder(); toast('📤 备份已下载，本月提醒已解除');
             }
-
+            els.reminderExportBtn.addEventListener('click', exportData);
+            els.exportBtn.addEventListener('click', exportData);
             els.importBtn.addEventListener('click', () => els.importFileInput.click());
             els.importFileInput.addEventListener('change', e => {
-                const file = e.target.files[0];
-                if (!file) return;
+                const file = e.target.files[0]; if(!file) return;
                 const reader = new FileReader();
                 reader.onload = ev => {
                     try {
                         const data = JSON.parse(ev.target.result);
-                        if (!data.notes || !Array.isArray(data.notes)) throw new Error();
-                        if (!confirm(`导入 ${data.notes.length} 条笔记和 ${data.categories.length} 个分类？当前数据将被替换！`)) return;
-                        notes = data.notes;
-                        categories = data.categories;
-                        if (currentUser && !currentUser.isAnonymous) {
-                            // 云端覆盖
-                            const uid = currentUser.uid;
-                            const batch = db.batch();
-                            // 删除现有所有笔记和分类并写入新数据（简化处理，生产环境应谨慎）
-                            alert('云端导入功能暂未实现精细合并，请先使用手动导出备份，再在云端模式下通过此文件恢复（将覆盖云端数据）。');
-                            // 这里仅示意，实际需谨慎操作
-                        } else {
-                            saveLocal();
-                        }
-                        renderAll();
-                        toast('📥 备份已导入');
-                    } catch (err) { toast('❌ 文件格式不正确'); }
+                        if(!data.notes||!Array.isArray(data.notes)) throw new Error();
+                        if(!confirm(`导入 ${data.notes.length} 条笔记和 ${data.categories.length} 个分类？当前数据将被替换！`)) return;
+                        notes = data.notes; categories = data.categories;
+                        if(currentUser&&!currentUser.isAnonymous) { alert('云端导入需手动覆盖，请先在Firebase控制台中处理。数据已加载到本地视图。'); }
+                        else { saveLocal(); }
+                        renderAll(); toast('📥 备份已导入');
+                    } catch(err) { toast('❌ 文件格式不正确'); }
                 };
-                reader.readAsText(file);
-                els.importFileInput.value = '';
+                reader.readAsText(file); els.importFileInput.value = '';
             });
 
-            // ==================== 笔记 CRUD ====================
+            // ==================== 笔记CRUD ====================
             async function saveNote(formData) {
                 const { id, title, author, date, notesText, categoryId } = formData;
                 if (currentUser && !currentUser.isAnonymous) {
-                    const uid = currentUser.uid;
-                    const notesRef = db.collection('users').doc(uid).collection('notes');
-                    if (id) {
-                        await notesRef.doc(id).update({
-                            title, author, date, notes: notesText, categoryId,
-                            updatedAt: firebase.firestore.FieldValue.serverTimestamp()
-                        });
-                    } else {
-                        const docRef = notesRef.doc();
-                        await docRef.set({
-                            title, author, date, notes: notesText, categoryId,
-                            createdAt: firebase.firestore.FieldValue.serverTimestamp(),
-                            updatedAt: firebase.firestore.FieldValue.serverTimestamp()
-                        });
-                    }
+                    const uid = currentUser.uid; const notesRef = db.collection('users').doc(uid).collection('notes');
+                    if (id) { await notesRef.doc(id).update({ title, author, date, notes: notesText, categoryId, updatedAt: firebase.firestore.FieldValue.serverTimestamp() }); }
+                    else { const docRef = notesRef.doc(); await docRef.set({ title, author, date, notes: notesText, categoryId, createdAt: firebase.firestore.FieldValue.serverTimestamp(), updatedAt: firebase.firestore.FieldValue.serverTimestamp() }); }
                 } else {
-                    if (id) {
-                        const idx = notes.findIndex(n => n.id === id);
-                        if (idx >= 0) {
-                            notes[idx] = { ...notes[idx], title, author, date, notes: notesText, categoryId, updatedAt: Date.now() };
-                        }
-                    } else {
-                        const newNote = {
-                            id: Date.now().toString(),
-                            title, author, date, notes: notesText, categoryId,
-                            createdAt: Date.now(), updatedAt: Date.now()
-                        };
-                        notes.unshift(newNote);
-                    }
-                    saveLocal();
-                    renderAll();
+                    if (id) { const idx = notes.findIndex(n => n.id === id); if (idx >= 0) notes[idx] = { ...notes[idx], title, author, date, notes: notesText, categoryId, updatedAt: Date.now() }; }
+                    else { notes.unshift({ id: Date.now().toString(), title, author, date, notes: notesText, categoryId, createdAt: Date.now(), updatedAt: Date.now() }); }
+                    saveLocal(); renderAll();
                 }
             }
-
             async function delNote(id) {
-                const note = notes.find(n => n.id === id);
-                if (!note) return;
-                if (!confirm(`删除“${note.title.slice(0,20)}”？`)) return;
-                if (currentUser && !currentUser.isAnonymous) {
-                    await db.collection('users').doc(currentUser.uid).collection('notes').doc(id).delete();
-                } else {
-                    notes = notes.filter(n => n.id !== id);
-                    saveLocal();
-                    renderAll();
-                }
+                const note = notes.find(n => n.id === id); if (!note) return;
+                if (!confirm(`删除"${note.title.slice(0,20)}"？`)) return;
+                if (currentUser && !currentUser.isAnonymous) { await db.collection('users').doc(currentUser.uid).collection('notes').doc(id).delete(); }
+                else { notes = notes.filter(n => n.id !== id); saveLocal(); renderAll(); }
                 toast('🗑 已删除');
             }
-
             function openAdd() {
-                editingId = null;
-                els.noteId.value = '';
-                els.bookTitle.value = '';
-                els.bookAuthor.value = '';
-                els.bookDate.value = today();
-                els.bookNotes.value = '';
-                els.bookCategory.value = 'uncategorized';
-                els.modalTitle.textContent = '✍️ 添加笔记';
-                els.submitBtn.textContent = '💾 保存笔记';
-                els.categoryManager.style.display = 'none';
-                els.modalOverlay.style.display = 'flex';
-                document.body.style.overflow = 'hidden';
-                setTimeout(() => els.bookTitle.focus(), 300);
+                editingId = null; els.noteId.value = ''; els.bookTitle.value = ''; els.bookAuthor.value = '';
+                els.bookDate.value = today(); els.bookNotes.value = ''; els.bookCategory.value = 'uncategorized';
+                els.modalTitle.textContent = '✍️ 添加笔记'; els.submitBtn.textContent = '💾 保存笔记';
+                els.categoryManager.style.display = 'none'; els.modalOverlay.style.display = 'flex';
+                document.body.style.overflow = 'hidden'; setTimeout(() => els.bookTitle.focus(), 300);
             }
             function openEdit(id) {
-                const note = notes.find(n => n.id === id);
-                if (!note) return;
-                editingId = id;
-                els.noteId.value = note.id;
-                els.bookTitle.value = note.title;
-                els.bookAuthor.value = note.author || '';
-                els.bookDate.value = note.date || '';
-                els.bookNotes.value = note.notes;
-                els.bookCategory.value = note.categoryId || 'uncategorized';
-                els.modalTitle.textContent = '✏️ 编辑笔记';
-                els.submitBtn.textContent = '✅ 更新笔记';
-                els.categoryManager.style.display = 'none';
-                els.modalOverlay.style.display = 'flex';
-                document.body.style.overflow = 'hidden';
-                setTimeout(() => els.bookTitle.focus(), 300);
+                const note = notes.find(n => n.id === id); if (!note) return;
+                editingId = id; els.noteId.value = note.id; els.bookTitle.value = note.title;
+                els.bookAuthor.value = note.author || ''; els.bookDate.value = note.date || '';
+                els.bookNotes.value = note.notes; els.bookCategory.value = note.categoryId || 'uncategorized';
+                els.modalTitle.textContent = '✏️ 编辑笔记'; els.submitBtn.textContent = '✅ 更新笔记';
+                els.categoryManager.style.display = 'none'; els.modalOverlay.style.display = 'flex';
+                document.body.style.overflow = 'hidden'; setTimeout(() => els.bookTitle.focus(), 300);
             }
             function closeModal() {
                 els.modalOverlay.classList.add('closing');
-                setTimeout(() => {
-                    els.modalOverlay.style.display = 'none';
-                    els.modalOverlay.classList.remove('closing');
-                    document.body.style.overflow = '';
-                }, 250);
-                editingId = null;
-                els.noteForm.reset();
-                els.categoryManager.style.display = 'none';
+                setTimeout(() => { els.modalOverlay.style.display = 'none'; els.modalOverlay.classList.remove('closing'); document.body.style.overflow = ''; }, 250);
+                editingId = null; els.noteForm.reset(); els.categoryManager.style.display = 'none';
             }
             els.noteForm.addEventListener('submit', e => {
                 e.preventDefault();
-                const formData = {
-                    id: els.noteId.value || null,
-                    title: els.bookTitle.value.trim(),
-                    author: els.bookAuthor.value.trim(),
-                    date: els.bookDate.value,
-                    notesText: els.bookNotes.value.trim(),
-                    categoryId: els.bookCategory.value
-                };
+                const formData = { id: els.noteId.value || null, title: els.bookTitle.value.trim(), author: els.bookAuthor.value.trim(), date: els.bookDate.value, notesText: els.bookNotes.value.trim(), categoryId: els.bookCategory.value };
                 if (!formData.title || !formData.notesText) { toast('请填写书名和感想'); return; }
-                saveNote(formData);
-                closeModal();
+                saveNote(formData); closeModal();
             });
 
-            // ==================== 分类管理操作 ====================
+            // ==================== 分类管理 ====================
             async function addCat(name) {
-                const trimmed = name.trim();
-                if (!trimmed) return false;
+                const trimmed = name.trim(); if (!trimmed) return false;
                 if (categories.some(c => c.name === trimmed)) { toast('分类已存在'); return false; }
-                const newCat = {
-                    id: 'cat_' + Date.now(),
-                    name: trimmed,
-                    color: ['#b8864e','#8b5e3c','#5d7b6f','#7b6b8a','#c47e5a','#6d8a7d'][Math.floor(Math.random()*6)],
-                    isDefault: false
-                };
-                if (currentUser && !currentUser.isAnonymous) {
-                    await db.collection('users').doc(currentUser.uid).collection('categories').doc(newCat.id).set(newCat);
-                } else {
-                    categories.push(newCat);
-                    saveLocal();
-                    renderAll();
-                }
+                const newCat = { id: 'cat_'+Date.now(), name: trimmed, color: ['#b8864e','#8b5e3c','#5d7b6f','#7b6b8a','#c47e5a','#6d8a7d'][Math.floor(Math.random()*6)], isDefault: false };
+                if (currentUser && !currentUser.isAnonymous) { await db.collection('users').doc(currentUser.uid).collection('categories').doc(newCat.id).set(newCat); }
+                else { categories.push(newCat); saveLocal(); renderAll(); }
                 return true;
             }
             async function delCat(id) {
                 if (id === 'uncategorized') { toast('不能删除未分类'); return; }
-                const cat = categories.find(c => c.id === id);
-                if (!cat || cat.isDefault) { toast('预设分类不可删除'); return; }
-                if (!confirm(`删除分类“${cat.name}”？笔记将移入未分类。`)) return;
-                // 迁移笔记
+                const cat = categories.find(c => c.id === id); if (!cat || cat.isDefault) { toast('预设分类不可删除'); return; }
+                if (!confirm(`删除分类"${cat.name}"？笔记将移入未分类。`)) return;
                 notes.forEach(n => { if (n.categoryId === id) n.categoryId = 'uncategorized'; });
                 if (currentUser && !currentUser.isAnonymous) {
                     const batch = db.batch();
                     notes.forEach(n => batch.update(db.collection('users').doc(currentUser.uid).collection('notes').doc(n.id), { categoryId: 'uncategorized' }));
                     batch.delete(db.collection('users').doc(currentUser.uid).collection('categories').doc(id));
                     await batch.commit();
-                } else {
-                    saveLocal();
-                    categories = categories.filter(c => c.id !== id);
-                    renderAll();
-                }
+                } else { saveLocal(); categories = categories.filter(c => c.id !== id); renderAll(); }
                 toast('已删除分类');
             }
             async function renameCat(id, newName) {
                 if (!newName || categories.some(c => c.name === newName && c.id !== id)) { toast('名称重复或无效'); return; }
-                const cat = categories.find(c => c.id === id);
-                if (!cat) return;
-                if (currentUser && !currentUser.isAnonymous) {
-                    await db.collection('users').doc(currentUser.uid).collection('categories').doc(id).update({ name: newName });
-                } else {
-                    cat.name = newName;
-                    saveLocal();
-                    renderAll();
-                }
+                const cat = categories.find(c => c.id === id); if (!cat) return;
+                if (currentUser && !currentUser.isAnonymous) { await db.collection('users').doc(currentUser.uid).collection('categories').doc(id).update({ name: newName }); }
+                else { cat.name = newName; saveLocal(); renderAll(); }
                 toast('分类已重命名');
             }
 
@@ -771,58 +741,23 @@
             els.fabBtn.onclick = openAdd;
             els.modalOverlay.onclick = e => { if (e.target === els.modalOverlay) closeModal(); };
             els.cancelBtn.onclick = closeModal;
-            els.manageCategoryBtn.onclick = () => {
-                const visible = els.categoryManager.style.display === 'block';
-                els.categoryManager.style.display = visible ? 'none' : 'block';
-                if (!visible) renderCategoryManager();
-            };
+            els.manageCategoryBtn.onclick = () => { const v = els.categoryManager.style.display === 'block'; els.categoryManager.style.display = v ? 'none' : 'block'; if (!v) renderCategoryManager(); };
             els.closeCategoryManagerBtn.onclick = () => els.categoryManager.style.display = 'none';
-            els.addCategoryBtn.onclick = async () => {
-                const name = els.newCategoryName.value.trim();
-                if (name) {
-                    if (await addCat(name)) {
-                        els.newCategoryName.value = '';
-                        renderCategoryManager();
-                        renderCategorySelect();
-                        renderCategoryFilter();
-                        toast('新分类已添加');
-                    }
-                }
-            };
+            els.addCategoryBtn.onclick = async () => { const name = els.newCategoryName.value.trim(); if (name && await addCat(name)) { els.newCategoryName.value = ''; renderCategoryManager(); renderCategorySelect(); renderCategoryFilter(); toast('新分类已添加'); } };
 
-            // 搜索
             let searchTimer;
-            els.searchInput.oninput = () => {
-                searchTerm = els.searchInput.value.trim().toLowerCase();
-                els.searchClear.classList.toggle('visible', !!searchTerm);
-                clearTimeout(searchTimer);
-                searchTimer = setTimeout(renderAll, 200);
-            };
-            els.searchClear.onclick = () => {
-                els.searchInput.value = '';
-                searchTerm = '';
-                els.searchClear.classList.remove('visible');
-                renderAll();
-                els.searchInput.focus();
-            };
+            els.searchInput.oninput = () => { searchTerm = els.searchInput.value.trim().toLowerCase(); els.searchClear.classList.toggle('visible', !!searchTerm); clearTimeout(searchTimer); searchTimer = setTimeout(renderAll, 200); };
+            els.searchClear.onclick = () => { els.searchInput.value = ''; searchTerm = ''; els.searchClear.classList.remove('visible'); renderAll(); els.searchInput.focus(); };
 
-            // 快捷键
             document.addEventListener('keydown', e => {
                 if (e.key === 'Escape' && els.modalOverlay.style.display === 'flex') closeModal();
-                if ((e.ctrlKey || e.metaKey) && e.key === 'n') {
-                    e.preventDefault();
-                    if (els.modalOverlay.style.display !== 'flex') openAdd();
-                }
-                if ((e.ctrlKey || e.metaKey) && e.key === 'k') {
-                    e.preventDefault();
-                    els.searchInput.focus();
-                }
+                if ((e.ctrlKey || e.metaKey) && e.key === 'n') { e.preventDefault(); if (els.modalOverlay.style.display !== 'flex') openAdd(); }
+                if ((e.ctrlKey || e.metaKey) && e.key === 'k') { e.preventDefault(); els.searchInput.focus(); }
             });
 
-            // 初始化：显示登录界面
+            // ==================== 初始化 ====================
             showAuth();
-            // 如果之前是匿名登录，则尝试恢复（暂不实现）
-            console.log('📚 云同步读书笔记已启动');
+            console.log('📚 云同步读书笔记已启动（含统计面板）');
         })();
     </script>
 </body>
