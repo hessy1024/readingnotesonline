@@ -3,16 +3,16 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-    <title>📚 读书笔记 · 云同步</title>
+    <title>🌱 成长记录手册</title>
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="default">
-    <meta name="apple-mobile-web-app-title" content="读书笔记">
+    <meta name="apple-mobile-web-app-title" content="成长记录手册">
     <meta name="theme-color" content="#f8f5f0">
 
     <script>
         (() => {
             const manifest = {
-                name: "读书笔记", short_name: "读书笔记", start_url: location.href,
+                name: "成长记录手册", short_name: "成长手册", start_url: location.href,
                 display: "standalone", background_color: "#f8f5f0", theme_color: "#b8864e",
                 icons: [{ src: "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxOTIiIGhlaWdodD0iMTkyIiB2aWV3Qm94PSIwIDAgMTkyIDE5MiI+PHJlY3Qgd2lkdGg9IjE5MiIgaGVpZ2h0PSIxOTIiIGZpbGw9IiNiODg2NGUiIHJ4PSIzNiIvPjx0ZXh0IHg9Ijk2IiB5PSIxMjgiIGZvbnQtc2l6ZT0iOTYiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZpbGw9IiNmZmYiIGZvbnQtZmFtaWx5PSJzYW5zLXNlcmlmIj7wn5OaPC90ZXh0Pjwvc3ZnPg==", sizes: "192x192", type: "image/svg+xml" }]
             };
@@ -61,17 +61,31 @@
         .view-tab { flex:1; text-align:center; padding:8px 16px; border-radius:20px; font-size:14px; font-weight:500; cursor:pointer; transition:var(--transition); color:var(--text-secondary); border:none; background:transparent; white-space:nowrap; letter-spacing:0.3px; }
         .view-tab.active { background:var(--accent); color:#fff; font-weight:600; box-shadow:0 2px 8px rgba(184,134,78,0.25); }
 
-        .reminder-banner { background:#fff8e7; border:1px solid #f0d89d; border-radius:12px; padding:12px 16px; margin-bottom:12px; display:flex; align-items:center; gap:12px; font-size:14px; color:#7c5e10; box-shadow:0 2px 8px rgba(184,134,78,0.08); }
-        .reminder-banner .reminder-icon { font-size:24px; flex-shrink:0; }
-        .reminder-banner .reminder-text { flex:1; line-height:1.4; }
-        .reminder-banner .reminder-btn { padding:8px 18px; border-radius:20px; border:none; background:var(--accent); color:#fff; cursor:pointer; font-weight:600; font-size:13px; white-space:nowrap; flex-shrink:0; }
-
         .category-filter { margin-top:8px; display:flex; gap:8px; overflow-x:auto; padding:4px 0 2px; scrollbar-width:thin; -webkit-overflow-scrolling:touch; }
-        .category-filter::-webkit-scrollbar { height:4px; }
-        .category-filter::-webkit-scrollbar-thumb { background:#d9cebd; border-radius:10px; }
         .filter-tag { flex-shrink:0; padding:6px 16px; border-radius:20px; border:1px solid var(--border); background:#faf7f2; font-size:13px; cursor:pointer; white-space:nowrap; color:var(--text-secondary); letter-spacing:0.3px; user-select:none; transition:var(--transition); }
         .filter-tag.active { background:var(--accent); border-color:var(--accent); color:#fff; font-weight:600; box-shadow:0 2px 8px rgba(184,134,78,0.25); }
         .filter-tag .count { margin-left:4px; font-size:11px; opacity:0.8; }
+
+        /* 书架样式 */
+        .bookshelf { display:flex; flex-direction:column; gap:24px; margin-top:8px; }
+        .shelf-category { }
+        .shelf-category-header { display:flex; align-items:center; gap:8px; margin-bottom:12px; padding:0 4px; }
+        .shelf-category-header .cat-dot { width:12px; height:12px; border-radius:50%; }
+        .shelf-category-header h3 { font-family:var(--font-serif); font-size:18px; font-weight:600; color:var(--text); }
+        .shelf-category-header .cat-count { font-size:13px; color:var(--text-secondary); margin-left:auto; }
+        .shelf-books { display:grid; grid-template-columns:1fr 1fr; gap:10px; }
+        .book-item { background:var(--card-bg); border-radius:var(--radius); padding:14px 14px 12px; box-shadow:var(--shadow-sm); transition:var(--transition); cursor:pointer; display:flex; flex-direction:column; }
+        .book-item:hover { box-shadow:var(--shadow-md); transform:translateY(-2px); }
+        .book-item .book-cover { display:flex; align-items:center; gap:8px; margin-bottom:8px; }
+        .book-item .book-emoji { font-size:24px; flex-shrink:0; }
+        .book-item .book-meta { flex:1; min-width:0; }
+        .book-item .book-title-sm { font-family:var(--font-serif); font-size:14px; font-weight:600; line-height:1.3; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden; }
+        .book-item .book-author-sm { font-size:11px; color:var(--text-secondary); margin-top:2px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+        .book-item .book-stats-row { display:flex; align-items:center; gap:8px; margin-top:6px; font-size:11px; color:var(--text-secondary); flex-wrap:wrap; }
+        .book-item .star-rating-sm { display:inline-flex; gap:1px; font-size:13px; }
+        .book-item .star-rating-sm .star { color:#e8e0d5; }
+        .book-item .star-rating-sm .star.filled { color:var(--star-color); }
+        .book-item .read-count-sm, .book-item .reading-time-sm { display:flex; align-items:center; gap:2px; }
 
         .notes-list { display:flex; flex-direction:column; gap:12px; margin-top:8px; }
         .note-card { background:var(--card-bg); border-radius:var(--radius); padding:18px 20px; box-shadow:var(--shadow-sm); border:1px solid transparent; transition:var(--transition); animation:fadeInUp 0.35s ease forwards; opacity:0; }
@@ -85,8 +99,8 @@
         .note-card .card-date { font-size:11px; color:#b8a898; white-space:nowrap; flex-shrink:0; }
         .card-meta-row { display:flex; align-items:center; gap:12px; margin-top:8px; flex-wrap:wrap; }
         .star-rating { display:inline-flex; align-items:center; gap:2px; }
-        .star-rating .star { color: #e8e0d5; font-size:16px; }
-        .star-rating .star.filled { color: var(--star-color); }
+        .star-rating .star { color:#e8e0d5; font-size:16px; }
+        .star-rating .star.filled { color:var(--star-color); }
         .read-count { font-size:12px; color:var(--text-secondary); display:flex; align-items:center; gap:4px; }
         .category-badge { display:inline-block; padding:3px 10px; border-radius:20px; font-size:11px; font-weight:500; letter-spacing:0.3px; background:#f0e8db; color:#5c4a35; }
         .card-notes { margin-top:10px; padding-top:10px; border-top:1px dashed #f0e8db; font-size:14px; color:#5c4a35; line-height:1.7; white-space:pre-wrap; word-break:break-word; }
@@ -95,7 +109,6 @@
         .btn-sm.edit-btn:hover { background:#fdf6ed; border-color:var(--accent); color:var(--accent); }
         .btn-sm.delete-btn:hover { background:#fef5f5; border-color:#e8c4c4; color:var(--danger); }
 
-        /* 星级评分交互 */
         .star-input { display:flex; gap:4px; font-size:28px; cursor:pointer; }
         .star-input .star { color:#e8e0d5; transition:color 0.1s; }
         .star-input .star.active { color:var(--star-color); }
@@ -130,11 +143,18 @@
         .cat-stat-count { font-weight:600; color:var(--accent); font-size:14px; }
         .cat-stat-bar-wrap { flex:2; height:6px; background:#f0e8db; border-radius:3px; overflow:hidden; }
         .cat-stat-bar { height:100%; border-radius:3px; transition:width 0.4s ease; }
-        .monthly-book-list { background:var(--card-bg); border-radius:var(--radius); padding:20px; box-shadow:var(--shadow-sm); }
-        .monthly-book-list h3 { font-family:var(--font-serif); font-size:16px; margin-bottom:12px; color:var(--text); }
-        .monthly-book-item { padding:8px 0; border-bottom:1px solid #f5ede3; font-size:13px; color:var(--text-secondary); display:flex; align-items:center; gap:8px; }
-        .monthly-book-item:last-child { border-bottom:none; }
-        .monthly-book-item .mbi-date { font-size:11px; color:#b8a898; flex-shrink:0; width:45px; }
+        .top-list { background:var(--card-bg); border-radius:var(--radius); padding:20px; box-shadow:var(--shadow-sm); }
+        .top-list h3 { font-family:var(--font-serif); font-size:16px; margin-bottom:12px; color:var(--text); }
+        .top-item { display:flex; align-items:center; gap:10px; padding:8px 0; border-bottom:1px solid #f5ede3; font-size:14px; }
+        .top-item:last-child { border-bottom:none; }
+        .top-rank { width:24px; height:24px; border-radius:50%; background:var(--accent); color:#fff; font-weight:600; font-size:12px; display:flex; align-items:center; justify-content:center; flex-shrink:0; }
+        .top-name { flex:1; color:var(--text); }
+        .top-count { font-weight:600; color:var(--accent); }
+
+        .reminder-banner { background:#fff8e7; border:1px solid #f0d89d; border-radius:12px; padding:12px 16px; margin-bottom:12px; display:flex; align-items:center; gap:12px; font-size:14px; color:#7c5e10; box-shadow:0 2px 8px rgba(184,134,78,0.08); }
+        .reminder-banner .reminder-icon { font-size:24px; flex-shrink:0; }
+        .reminder-banner .reminder-text { flex:1; line-height:1.4; }
+        .reminder-banner .reminder-btn { padding:8px 18px; border-radius:20px; border:none; background:var(--accent); color:#fff; cursor:pointer; font-weight:600; font-size:13px; white-space:nowrap; flex-shrink:0; }
 
         .footer-toolbar { display:flex; flex-direction:column; align-items:center; gap:12px; padding:20px 0 30px; font-size:12px; color:var(--text-secondary); }
         .stats-bar span { font-weight:600; color:var(--accent); }
@@ -191,13 +211,13 @@
         @keyframes toastIn { from{opacity:0; transform:translateX(-50%) translateY(-20px);} to{opacity:1; transform:translateX(-50%) translateY(0);} }
         @keyframes toastOut { from{opacity:1;} to{opacity:0; transform:translateX(-50%) translateY(-20px);} }
         mark { background:#fef3c7; padding:2px 4px; border-radius:3px; color:#7c5e10; }
-        @media (max-width:400px) { .stat-cards { grid-template-columns:1fr 1fr; } .chart-bars { gap:3px; } .chart-bar { max-width:28px; } }
+        @media (max-width:400px) { .shelf-books { grid-template-columns:1fr; } .stat-cards { grid-template-columns:1fr 1fr; } .chart-bars { gap:3px; } .chart-bar { max-width:28px; } }
     </style>
 </head>
 <body>
     <div id="authContainer" class="auth-container" style="display:none;">
         <div class="auth-box">
-            <h2 style="text-align:center; margin-bottom:20px;">🔐 登录云笔记</h2>
+            <h2 style="text-align:center; margin-bottom:20px;">🔐 登录成长手册</h2>
             <input type="email" id="authEmail" placeholder="电子邮箱">
             <input type="password" id="authPassword" placeholder="密码（至少6位）">
             <button id="loginBtn" class="btn-auth-primary">登 录</button>
@@ -209,8 +229,8 @@
 
     <div id="appContainer" class="app-container" style="display:none;">
         <header class="app-header">
-            <span class="icon">📚</span>
-            <h1>读书笔记</h1>
+            <span class="icon">🌱</span>
+            <h1>成长记录手册</h1>
             <p class="subtitle" id="userEmailDisplay">未登录</p>
             <button class="logout-btn" id="logoutBtn">退出</button>
         </header>
@@ -222,7 +242,7 @@
             </div>
             <div class="category-filter" id="categoryFilter"></div>
             <div class="view-tabs" id="viewTabs">
-                <button class="view-tab active" data-view="notes">📋 笔记列表</button>
+                <button class="view-tab active" data-view="notes">📚 书架</button>
                 <button class="view-tab" data-view="stats">📊 阅读统计</button>
             </div>
             <p class="search-hint">共 <span id="totalCount">0</span> 条笔记</p>
@@ -232,13 +252,21 @@
             <span class="reminder-text">📅 本月尚未备份读书笔记，建议立即导出备份以防数据丢失。</span>
             <button class="reminder-btn" id="reminderExportBtn">立即备份</button>
         </div>
-        <div class="notes-list" id="notesList"></div>
+
+        <!-- 书架视图 -->
+        <div class="bookshelf" id="bookshelf"></div>
+        <!-- 搜索结果列表（搜索时使用） -->
+        <div class="notes-list" id="notesList" style="display:none;"></div>
+
         <div class="stats-view" id="statsView">
             <div class="stat-cards" id="statCards"></div>
             <div class="monthly-chart" id="monthlyChart"><h3>📈 近12个月阅读趋势</h3><div class="chart-bars" id="chartBars"></div></div>
             <div class="category-stats" id="categoryStats"><h3>🏷️ 分类分布</h3><div id="catStatList"></div></div>
+            <div class="top-list" id="topBooksContainer"><h3>📚 阅读次数最多的书籍</h3><div id="topBooksList"></div></div>
+            <div class="top-list" id="topAuthorsContainer"><h3>✒️ 阅读次数最多的作者</h3><div id="topAuthorsList"></div></div>
             <div class="monthly-book-list" id="monthlyBookList"><h3>📅 本月阅读书目</h3><div id="monthlyBooksContainer"></div></div>
         </div>
+
         <div class="footer-toolbar">
             <div class="stats-bar">📖 已记录 <span id="statsCount">0</span> 本书的笔记</div>
             <div class="tool-buttons">
@@ -265,14 +293,20 @@
                     <div class="form-group"><label>🏷️ 分类</label><select id="bookCategory"></select></div>
                     <button type="button" class="btn-outline-sm" id="manageCategoryBtn">⚙️ 管理分类</button>
                 </div>
-                <div class="form-group">
-                    <label>⭐ 打分 (1-5)</label>
-                    <div class="star-input" id="starInput">
-                        <span class="star" data-value="1">★</span>
-                        <span class="star" data-value="2">★</span>
-                        <span class="star" data-value="3">★</span>
-                        <span class="star" data-value="4">★</span>
-                        <span class="star" data-value="5">★</span>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>⏱️ 阅读时长 (小时)</label>
+                        <input type="number" id="readingDuration" placeholder="例如 2.5" step="0.5" min="0" max="1000">
+                    </div>
+                    <div class="form-group">
+                        <label>⭐ 打分 (1-5)</label>
+                        <div class="star-input" id="starInput">
+                            <span class="star" data-value="1">★</span>
+                            <span class="star" data-value="2">★</span>
+                            <span class="star" data-value="3">★</span>
+                            <span class="star" data-value="4">★</span>
+                            <span class="star" data-value="5">★</span>
+                        </div>
                     </div>
                 </div>
                 <div class="form-group"><label>💬 感想 *</label><textarea id="bookNotes" required></textarea></div>
@@ -292,7 +326,6 @@
             </div>
         </div>
     </div>
-
     <div id="toastContainer"></div>
 
     <script>
@@ -311,16 +344,8 @@
             const db = firebase.firestore();
             db.enablePersistence().catch(() => {});
 
-            let currentUser = null;
-            let notes = [];
-            let categories = [];
-            let searchTerm = '';
-            let activeCat = null;
-            let editingId = null;
-            let currentView = 'notes';
-            let unsubscribeNotes = null;
-            let unsubscribeCats = null;
-            let currentRating = 0; // 当前表单中的打分
+            let currentUser = null, notes = [], categories = [], searchTerm = '', activeCat = null, editingId = null;
+            let currentView = 'notes', unsubscribeNotes = null, unsubscribeCats = null, currentRating = 0;
 
             const today = () => new Date().toISOString().slice(0,10);
             const fmtDate = d => { if(!d) return ''; const dt = new Date(d+'T00:00:00'); const now = new Date(); const diff = Math.floor((now-dt)/864e5); if(diff===0)return'今天'; if(diff===1)return'昨天'; if(diff===2)return'前天'; if(diff<7)return diff+'天前'; if(diff<30)return Math.floor(diff/7)+'周前'; if(diff<365)return Math.floor(diff/30)+'个月前'; return d; };
@@ -336,8 +361,8 @@
                 authEmail: $('authEmail'), authPassword: $('authPassword'),
                 loginBtn: $('loginBtn'), registerBtn: $('registerBtn'), authError: $('authError'),
                 anonymousBtn: $('anonymousBtn'), userEmailDisplay: $('userEmailDisplay'), logoutBtn: $('logoutBtn'),
-                notesList: $('notesList'), statsView: $('statsView'), viewTabs: $('viewTabs'),
-                searchInput: $('searchInput'), searchClear: $('searchClear'),
+                bookshelf: $('bookshelf'), notesList: $('notesList'), statsView: $('statsView'),
+                viewTabs: $('viewTabs'), searchInput: $('searchInput'), searchClear: $('searchClear'),
                 totalCount: $('totalCount'), statsCount: $('statsCount'),
                 categoryFilter: $('categoryFilter'), searchBarArea: $('searchBarArea'),
                 reminderBanner: $('reminderBanner'), reminderExportBtn: $('reminderExportBtn'),
@@ -345,32 +370,25 @@
                 fabBtn: $('fabBtn'), modalOverlay: $('modalOverlay'), modalTitle: $('modalTitle'),
                 noteForm: $('noteForm'), noteId: $('noteId'), bookTitle: $('bookTitle'),
                 bookAuthor: $('bookAuthor'), bookDate: $('bookDate'), bookCategory: $('bookCategory'),
+                readingDuration: $('readingDuration'), starInput: $('starInput'),
                 bookNotes: $('bookNotes'), submitBtn: $('submitBtn'),
-                starInput: $('starInput'),
                 categoryManager: $('categoryManager'), categoryListContainer: $('categoryListContainer'),
                 newCategoryName: $('newCategoryName'), addCategoryBtn: $('addCategoryBtn'),
                 closeCategoryManagerBtn: $('closeCategoryManager'), cancelBtn: $('cancelBtn'),
                 manageCategoryBtn: $('manageCategoryBtn'),
                 statCards: $('statCards'), chartBars: $('chartBars'), catStatList: $('catStatList'),
-                monthlyBooksContainer: $('monthlyBooksContainer')
+                monthlyBooksContainer: $('monthlyBooksContainer'),
+                topBooksList: $('topBooksList'), topAuthorsList: $('topAuthorsList')
             };
 
-            // 星级评分交互
             function initStarInput() {
-                const stars = els.starInput.querySelectorAll('.star');
-                stars.forEach(star => {
-                    star.addEventListener('click', () => {
-                        const val = parseInt(star.dataset.value);
-                        setStarRating(val);
-                    });
+                els.starInput.querySelectorAll('.star').forEach(star => {
+                    star.addEventListener('click', () => setStarRating(parseInt(star.dataset.value)));
                 });
             }
             function setStarRating(val) {
                 currentRating = val;
-                const stars = els.starInput.querySelectorAll('.star');
-                stars.forEach(s => {
-                    s.classList.toggle('active', parseInt(s.dataset.value) <= val);
-                });
+                els.starInput.querySelectorAll('.star').forEach(s => s.classList.toggle('active', parseInt(s.dataset.value) <= val));
             }
 
             function showAuth() { els.authContainer.style.display = 'flex'; els.appContainer.style.display = 'none'; }
@@ -404,18 +422,13 @@
                 const uid = currentUser.uid;
                 const catsRef = db.collection('users').doc(uid).collection('categories');
                 unsubscribeCats = catsRef.onSnapshot(snapshot => {
-                    categories = [];
-                    snapshot.forEach(doc => categories.push({ id: doc.id, ...doc.data() }));
+                    categories = []; snapshot.forEach(doc => categories.push({ id: doc.id, ...doc.data() }));
                     if (categories.length === 0) {
                         const defaults = [
-                            { name: '未分类', color: '#b8a898', isDefault: true },
-                            { name: '文学', color: '#c47e5a', isDefault: true },
-                            { name: '历史', color: '#8b5e3c', isDefault: true },
-                            { name: '科技', color: '#5d7b6f', isDefault: true },
-                            { name: '哲学', color: '#7b6b8a', isDefault: true },
-                            { name: '心理', color: '#b87a6b', isDefault: true },
-                            { name: '商业', color: '#6d8a7d', isDefault: true },
-                            { name: '生活', color: '#c49a6c', isDefault: true }
+                            { name: '未分类', color: '#b8a898', isDefault: true }, { name: '文学', color: '#c47e5a', isDefault: true },
+                            { name: '历史', color: '#8b5e3c', isDefault: true }, { name: '科技', color: '#5d7b6f', isDefault: true },
+                            { name: '哲学', color: '#7b6b8a', isDefault: true }, { name: '心理', color: '#b87a6b', isDefault: true },
+                            { name: '商业', color: '#6d8a7d', isDefault: true }, { name: '生活', color: '#c49a6c', isDefault: true }
                         ];
                         const batch = db.batch();
                         defaults.forEach(c => { const ref = catsRef.doc(c.name === '未分类' ? 'uncategorized' : c.name.toLowerCase()); batch.set(ref, c); });
@@ -425,8 +438,7 @@
                 });
                 const notesRef = db.collection('users').doc(uid).collection('notes');
                 unsubscribeNotes = notesRef.orderBy('createdAt', 'desc').onSnapshot(snapshot => {
-                    notes = [];
-                    snapshot.forEach(doc => notes.push({ id: doc.id, ...doc.data() }));
+                    notes = []; snapshot.forEach(doc => notes.push({ id: doc.id, ...doc.data() }));
                     renderAll();
                 });
             }
@@ -437,14 +449,10 @@
                 categories = JSON.parse(localStorage.getItem('local_categories') || '[]');
                 if (categories.length === 0) {
                     categories = [
-                        { id:'uncategorized',name:'未分类',color:'#b8a898',isDefault:true },
-                        { id:'literature',name:'文学',color:'#c47e5a',isDefault:true },
-                        { id:'history',name:'历史',color:'#8b5e3c',isDefault:true },
-                        { id:'tech',name:'科技',color:'#5d7b6f',isDefault:true },
-                        { id:'philosophy',name:'哲学',color:'#7b6b8a',isDefault:true },
-                        { id:'psychology',name:'心理',color:'#b87a6b',isDefault:true },
-                        { id:'business',name:'商业',color:'#6d8a7d',isDefault:true },
-                        { id:'life',name:'生活',color:'#c49a6c',isDefault:true }
+                        { id:'uncategorized',name:'未分类',color:'#b8a898',isDefault:true }, { id:'literature',name:'文学',color:'#c47e5a',isDefault:true },
+                        { id:'history',name:'历史',color:'#8b5e3c',isDefault:true }, { id:'tech',name:'科技',color:'#5d7b6f',isDefault:true },
+                        { id:'philosophy',name:'哲学',color:'#7b6b8a',isDefault:true }, { id:'psychology',name:'心理',color:'#b87a6b',isDefault:true },
+                        { id:'business',name:'商业',color:'#6d8a7d',isDefault:true }, { id:'life',name:'生活',color:'#c49a6c',isDefault:true }
                     ];
                 }
                 renderAll();
@@ -461,114 +469,109 @@
             });
             function updateViewVisibility() {
                 if (currentView === 'notes') {
-                    els.notesList.style.display = '';
-                    els.statsView.classList.remove('active');
-                    renderNotes();
+                    els.bookshelf.style.display = ''; els.notesList.style.display = 'none'; els.statsView.classList.remove('active');
+                    renderBookshelfOrSearch();
                 } else {
-                    els.notesList.style.display = 'none';
-                    els.statsView.classList.add('active');
+                    els.bookshelf.style.display = 'none'; els.notesList.style.display = 'none'; els.statsView.classList.add('active');
                     renderStats();
                 }
             }
 
-            function renderStars(rating) {
-                let html = '<span class="star-rating">';
-                for (let i=1; i<=5; i++) {
-                    html += `<span class="star${i <= rating ? ' filled' : ''}">★</span>`;
-                }
-                html += '</span>';
-                return html;
-            }
-
-            function renderStats() {
-                const now = new Date(); const thisYear = now.getFullYear(); const thisMonth = String(now.getMonth()+1).padStart(2,'0'); const thisYM = `${thisYear}-${thisMonth}`;
-                const totalBooks = notes.length;
-                const monthNotes = notes.filter(n => n.date && n.date.startsWith(thisYM));
-                const monthCount = monthNotes.length;
-                const yearNotes = notes.filter(n => n.date && n.date.startsWith(`${thisYear}-`));
-                const yearCount = yearNotes.length;
-                const catSet = new Set(notes.map(n => n.categoryId));
-                const catCount = catSet.size;
-                const ratedNotes = notes.filter(n => n.rating);
-                const avgRating = ratedNotes.length > 0 ? (ratedNotes.reduce((sum, n) => sum + n.rating, 0) / ratedNotes.length).toFixed(1) : '--';
-                els.statCards.innerHTML = `
-                    <div class="stat-card"><div class="stat-number">${totalBooks}</div><div class="stat-label">📚 总笔记数</div></div>
-                    <div class="stat-card"><div class="stat-number">${monthCount}</div><div class="stat-label">📅 本月新增</div><div class="stat-sub">${thisYear}年${parseInt(thisMonth)}月</div></div>
-                    <div class="stat-card"><div class="stat-number">${yearCount}</div><div class="stat-label">📆 今年累计</div><div class="stat-sub">${thisYear}年</div></div>
-                    <div class="stat-card"><div class="stat-number">${avgRating}</div><div class="stat-label">⭐ 平均分</div><div class="stat-sub">${ratedNotes.length}本已评分</div></div>
-                `;
-                const last12Months = [];
-                for (let i = 11; i >= 0; i--) { const d = new Date(thisYear, now.getMonth()-i, 1); last12Months.push(`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}`); }
-                const monthlyCounts = {}; last12Months.forEach(ym => monthlyCounts[ym]=0);
-                notes.forEach(n => { if(n.date){ const ym = n.date.slice(0,7); if(monthlyCounts[ym]!==undefined) monthlyCounts[ym]++; } });
-                const maxCount = Math.max(1, ...Object.values(monthlyCounts));
-                els.chartBars.innerHTML = last12Months.map(ym => {
-                    const count = monthlyCounts[ym];
-                    return `<div class="chart-bar-wrap"><div class="chart-bar${count===0?' no-data':''}" style="height:${Math.max(4,(count/maxCount)*140)}px;">${count>0?`<span class="bar-value">${count}</span>`:''}</div><div class="chart-label">${getMonthLabel(ym)}</div></div>`;
-                }).join('');
-                const catCounts = {}; notes.forEach(n => { catCounts[n.categoryId] = (catCounts[n.categoryId]||0)+1; });
-                const sortedCats = [...categories].sort((a,b)=>(catCounts[b.id]||0)-(catCounts[a.id]||0));
-                const catMax = Math.max(1, ...Object.values(catCounts));
-                els.catStatList.innerHTML = sortedCats.map(c => {
-                    const cnt = catCounts[c.id]||0;
-                    const pct = totalBooks>0?Math.round(cnt/totalBooks*100):0;
-                    return `<div class="cat-stat-row"><span class="cat-stat-color" style="background:${c.color};"></span><span class="cat-stat-name">${esc(c.name)}</span><span class="cat-stat-count">${cnt}本</span><span class="cat-stat-bar-wrap"><span class="cat-stat-bar" style="width:${(cnt/catMax)*100}%;background:${c.color};"></span></span><span style="font-size:11px;color:#b8a898;width:32px;text-align:right;">${pct}%</span></div>`;
-                }).join('');
-                if (monthNotes.length === 0) {
-                    els.monthlyBooksContainer.innerHTML = '<p style="color:var(--text-secondary);font-size:14px;text-align:center;padding:8px;">本月暂无阅读记录 📭</p>';
+            function renderBookshelfOrSearch() {
+                if (searchTerm.trim() || activeCat) {
+                    // 有搜索或筛选时，显示列表
+                    els.bookshelf.style.display = 'none';
+                    els.notesList.style.display = '';
+                    renderNotesList();
                 } else {
-                    els.monthlyBooksContainer.innerHTML = monthNotes.sort((a,b)=>(a.date<b.date?1:-1)).map(n => {
-                        const cat = categories.find(c=>c.id===n.categoryId);
-                        return `<div class="monthly-book-item"><span class="mbi-date">${n.date?n.date.slice(5):'--'}</span><span>📖 ${esc(n.title)}${n.author?' - '+esc(n.author):''}</span>${cat?`<span class="category-badge" style="background:${cat.color}20;color:${cat.color};border:1px solid ${cat.color}40;font-size:10px;margin-left:auto;flex-shrink:0;">${esc(cat.name)}</span>`:''}</div>`;
-                    }).join('');
+                    els.bookshelf.style.display = '';
+                    els.notesList.style.display = 'none';
+                    renderBookshelf();
                 }
             }
 
-            function renderAll() {
-                renderCategoryFilter();
-                renderCategorySelect();
-                if (currentView === 'notes') renderNotes(); else renderStats();
-                updateReminder();
-                els.totalCount.textContent = notes.length;
-                els.statsCount.textContent = notes.length;
-                updateViewVisibility();
+            function renderBookshelf() {
+                const filteredNotes = notes;
+                const grouped = {};
+                categories.forEach(c => grouped[c.id] = []);
+                filteredNotes.forEach(n => {
+                    const catId = n.categoryId || 'uncategorized';
+                    if (!grouped[catId]) grouped[catId] = [];
+                    grouped[catId].push(n);
+                });
+                // 排序：保持分类原始顺序，但只显示有笔记的分类，或至少显示存在的分类
+                let html = '';
+                categories.forEach(c => {
+                    const list = grouped[c.id] || [];
+                    if (list.length === 0 && c.id !== 'uncategorized') return; // 无笔记且非未分类不显示（但未分类可显示空）
+                    const emojis = ['📖','📚','📕','📗','📘','📙','📓','📔','📒','🪶'];
+                    html += `<div class="shelf-category" id="cat-${c.id}">
+                        <div class="shelf-category-header">
+                            <span class="cat-dot" style="background:${c.color};"></span>
+                            <h3>${esc(c.name)}</h3>
+                            <span class="cat-count">${list.length}本</span>
+                        </div>
+                        <div class="shelf-books">`;
+                    list.forEach((n, i) => {
+                        const rating = n.rating || 0;
+                        const readCount = n.readCount || 1;
+                        const readTime = n.readingDuration ? `${n.readingDuration}h` : '';
+                        let starsHtml = '';
+                        for (let s=1; s<=5; s++) starsHtml += `<span class="star${s <= rating ? ' filled' : ''}">★</span>`;
+                        html += `<div class="book-item" onclick="document.dispatchEvent(new CustomEvent('openEditNote', {detail:'${n.id}'}))">
+                            <div class="book-cover">
+                                <span class="book-emoji">${emojis[i%10]}</span>
+                                <div class="book-meta">
+                                    <div class="book-title-sm">${esc(n.title)}</div>
+                                    ${n.author ? `<div class="book-author-sm">${esc(n.author)}</div>` : ''}
+                                </div>
+                            </div>
+                            <div class="book-stats-row">
+                                <span class="star-rating-sm">${starsHtml}</span>
+                                <span class="read-count-sm">📖 ${readCount}次</span>
+                                ${readTime ? `<span class="reading-time-sm">⏱️ ${readTime}</span>` : ''}
+                            </div>
+                        </div>`;
+                    });
+                    html += `</div></div>`;
+                });
+                els.bookshelf.innerHTML = html || '<div class="empty-state"><span class="empty-icon">📝</span><h3>还没有记录</h3><p>点击右下角 ＋ 添加第一本书吧</p></div>';
+                // 为书架卡片添加点击事件（使用事件委托）
+                els.bookshelf.querySelectorAll('.book-item').forEach(item => {
+                    item.addEventListener('click', function(e) {
+                        const id = this.dataset.id;
+                        if (id) openEdit(id);
+                    });
+                });
             }
 
-            function renderCategoryFilter() {
-                const counts = {}; notes.forEach(n => { counts[n.categoryId] = (counts[n.categoryId]||0)+1; });
-                let html = `<span class="filter-tag ${activeCat===null?'active':''}" data-cat="">全部<span class="count">${notes.length}</span></span>`;
-                categories.forEach(c => { html += `<span class="filter-tag ${activeCat===c.id?'active':''}" data-cat="${c.id}">${esc(c.name)}<span class="count">${counts[c.id]||0}</span></span>`; });
-                els.categoryFilter.innerHTML = html;
-                els.categoryFilter.querySelectorAll('.filter-tag').forEach(tag => { tag.onclick = () => { activeCat = tag.dataset.cat || null; renderAll(); }; });
-            }
-            function renderCategorySelect() { els.bookCategory.innerHTML = categories.map(c => `<option value="${c.id}">${esc(c.name)}</option>`).join(''); }
-            function renderNotes() {
+            function renderNotesList() {
                 let filtered = [...notes];
                 if (searchTerm) filtered = filtered.filter(n => n.title.toLowerCase().includes(searchTerm) || n.author.toLowerCase().includes(searchTerm) || n.notes.toLowerCase().includes(searchTerm));
                 if (activeCat) filtered = filtered.filter(n => n.categoryId === activeCat);
                 filtered.sort((a,b) => (b.createdAt||0) - (a.createdAt||0));
-                if (filtered.length === 0 && notes.length === 0) {
-                    els.notesList.innerHTML = '<div class="empty-state"><span class="empty-icon">📝</span><h3>还没有读书笔记</h3><p>点击右下角 ＋ 记录第一条吧</p></div>'; return;
-                }
                 if (filtered.length === 0) {
-                    els.notesList.innerHTML = '<div class="empty-state"><span class="empty-icon">🔍</span><h3>没有匹配的笔记</h3></div>'; return;
+                    els.notesList.innerHTML = '<div class="empty-state"><span class="empty-icon">🔍</span><h3>没有匹配的记录</h3></div>';
+                    return;
                 }
                 els.notesList.innerHTML = filtered.map((n,i) => {
                     const cat = categories.find(c => c.id === n.categoryId) || categories.find(c => c.id === 'uncategorized');
                     const catName = cat ? cat.name : '未分类'; const catColor = cat ? cat.color : '#b8a898';
-                    const rating = n.rating || 0;
-                    const readCount = n.readCount || 1;
-                    const emoji = ['📖','📚','📕','📗','📘','📙','📓','📔','📒','🪶'][i%10];
-                    return `<div class="note-card" style="animation-delay:${i*0.04}s;">
+                    const rating = n.rating || 0; const readCount = n.readCount || 1;
+                    const readTime = n.readingDuration ? `${n.readingDuration}h` : '';
+                    let starsHtml = '';
+                    for (let s=1; s<=5; s++) starsHtml += `<span class="star${s <= rating ? ' filled' : ''}">★</span>`;
+                    return `<div class="note-card">
                         <div class="card-header">
-                            <span class="book-icon">${emoji}</span>
+                            <span class="book-icon">📖</span>
                             <div class="book-info">
                                 <div class="book-title">${hl(n.title,searchTerm)}</div>
                                 ${n.author?`<div class="book-author">${hl(n.author,searchTerm)}</div>`:''}
                                 <div class="card-meta-row">
                                     <span class="category-badge" style="background:${catColor}20;color:${catColor};border:1px solid ${catColor}40;">${esc(catName)}</span>
-                                    ${renderStars(rating)}
-                                    <span class="read-count">📖 ${readCount}次阅读</span>
+                                    <span class="star-rating">${starsHtml}</span>
+                                    <span class="read-count">📖 ${readCount}次</span>
+                                    ${readTime ? `<span>⏱️ ${readTime}</span>` : ''}
                                 </div>
                             </div>
                             <span class="card-date">${fmtDate(n.date)}</span>
@@ -584,21 +587,97 @@
                 els.notesList.querySelectorAll('.delete-btn').forEach(b => b.onclick = () => delNote(b.dataset.id));
             }
 
-            function renderCategoryManager() {
-                els.categoryListContainer.innerHTML = categories.map(c => `
-                    <div class="category-list-item"><span class="cat-color" style="background:${c.color};"></span><span class="cat-name">${esc(c.name)}</span><span class="cat-actions">${!c.isDefault?`<button class="rename-cat-btn" data-id="${c.id}">✏️</button><button class="delete-cat-btn" data-id="${c.id}">🗑️</button>`:'<span style="font-size:11px;color:#aaa;">系统</span>'}</span></div>`).join('');
-                els.categoryListContainer.querySelectorAll('.rename-cat-btn').forEach(b => { b.onclick = () => { const id=b.dataset.id; const oldName=categories.find(c=>c.id===id)?.name; const newName=prompt('新名称：',oldName); if(newName&&newName.trim()!==oldName) renameCat(id,newName.trim()); }; });
-                els.categoryListContainer.querySelectorAll('.delete-cat-btn').forEach(b => { b.onclick = () => delCat(b.dataset.id); });
+            function renderStats() {
+                const now = new Date(); const thisYear = now.getFullYear(); const thisMonth = String(now.getMonth()+1).padStart(2,'0'); const thisYM = `${thisYear}-${thisMonth}`;
+                const totalBooks = notes.length;
+                const monthNotes = notes.filter(n => n.date && n.date.startsWith(thisYM));
+                const yearNotes = notes.filter(n => n.date && n.date.startsWith(`${thisYear}-`));
+                const ratedNotes = notes.filter(n => n.rating);
+                const avgRating = ratedNotes.length ? (ratedNotes.reduce((s,n)=>s+n.rating,0)/ratedNotes.length).toFixed(1) : '--';
+                els.statCards.innerHTML = `
+                    <div class="stat-card"><div class="stat-number">${totalBooks}</div><div class="stat-label">📚 总记录</div></div>
+                    <div class="stat-card"><div class="stat-number">${monthNotes.length}</div><div class="stat-label">📅 本月新增</div></div>
+                    <div class="stat-card"><div class="stat-number">${yearNotes.length}</div><div class="stat-label">📆 今年累计</div></div>
+                    <div class="stat-card"><div class="stat-number">${avgRating}</div><div class="stat-label">⭐ 平均分</div><div class="stat-sub">${ratedNotes.length}本已评分</div></div>
+                `;
+                const last12Months = [];
+                for (let i = 11; i >= 0; i--) { const d = new Date(thisYear, now.getMonth()-i, 1); last12Months.push(`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}`); }
+                const monthlyCounts = {}; last12Months.forEach(ym => monthlyCounts[ym]=0);
+                notes.forEach(n => { if(n.date){ const ym = n.date.slice(0,7); if(monthlyCounts[ym]!==undefined) monthlyCounts[ym]++; } });
+                const maxCount = Math.max(1, ...Object.values(monthlyCounts));
+                els.chartBars.innerHTML = last12Months.map(ym => {
+                    const count = monthlyCounts[ym];
+                    return `<div class="chart-bar-wrap"><div class="chart-bar${count===0?' no-data':''}" style="height:${Math.max(4,(count/maxCount)*140)}px;">${count>0?`<span class="bar-value">${count}</span>`:''}</div><div class="chart-label">${getMonthLabel(ym)}</div></div>`;
+                }).join('');
+                const catCounts = {}; notes.forEach(n => { catCounts[n.categoryId] = (catCounts[n.categoryId]||0)+1; });
+                const sortedCats = [...categories].sort((a,b)=>(catCounts[b.id]||0)-(catCounts[a.id]||0));
+                const catMax = Math.max(1, ...Object.values(catCounts));
+                els.catStatList.innerHTML = sortedCats.map(c => {
+                    const cnt = catCounts[c.id]||0; const pct = totalBooks>0?Math.round(cnt/totalBooks*100):0;
+                    return `<div class="cat-stat-row"><span class="cat-stat-color" style="background:${c.color};"></span><span class="cat-stat-name">${esc(c.name)}</span><span class="cat-stat-count">${cnt}本</span><span class="cat-stat-bar-wrap"><span class="cat-stat-bar" style="width:${(cnt/catMax)*100}%;background:${c.color};"></span></span><span style="font-size:11px;color:#b8a898;width:32px;text-align:right;">${pct}%</span></div>`;
+                }).join('');
+                // 阅读次数最多的书籍 Top 5
+                const booksByReadCount = [...notes].sort((a,b) => (b.readCount||0) - (a.readCount||0)).slice(0,5);
+                els.topBooksList.innerHTML = booksByReadCount.length ? booksByReadCount.map((n,i) => `
+                    <div class="top-item"><span class="top-rank">${i+1}</span><span class="top-name">📖 ${esc(n.title)}</span><span class="top-count">${n.readCount||0}次</span></div>
+                `).join('') : '<div class="top-item"><span class="top-name">暂无数据</span></div>';
+                // 阅读次数最多的作者 Top 5
+                const authorReadMap = {};
+                notes.forEach(n => {
+                    const author = n.author && n.author.trim() ? n.author.trim() : '未知作者';
+                    authorReadMap[author] = (authorReadMap[author]||0) + (n.readCount||0);
+                });
+                const topAuthors = Object.entries(authorReadMap).sort((a,b) => b[1]-a[1]).slice(0,5);
+                els.topAuthorsList.innerHTML = topAuthors.length ? topAuthors.map((a,i) => `
+                    <div class="top-item"><span class="top-rank">${i+1}</span><span class="top-name">✒️ ${esc(a[0])}</span><span class="top-count">${a[1]}次</span></div>
+                `).join('') : '<div class="top-item"><span class="top-name">暂无数据</span></div>';
+                if (monthNotes.length === 0) {
+                    els.monthlyBooksContainer.innerHTML = '<p style="color:var(--text-secondary);text-align:center;padding:8px;">本月暂无记录 📭</p>';
+                } else {
+                    els.monthlyBooksContainer.innerHTML = monthNotes.sort((a,b)=>(a.date<b.date?1:-1)).map(n => {
+                        const cat = categories.find(c=>c.id===n.categoryId);
+                        return `<div class="monthly-book-item"><span class="mbi-date">${n.date?n.date.slice(5):'--'}</span><span>📖 ${esc(n.title)}${n.author?' - '+esc(n.author):''}</span>${cat?`<span class="category-badge" style="background:${cat.color}20;color:${cat.color};border:1px solid ${cat.color}40;font-size:10px;margin-left:auto;flex-shrink:0;">${esc(cat.name)}</span>`:''}</div>`;
+                    }).join('');
+                }
             }
 
+            function renderAll() {
+                renderCategoryFilter();
+                renderCategorySelect();
+                if (currentView === 'notes') {
+                    renderBookshelfOrSearch();
+                } else {
+                    renderStats();
+                }
+                updateReminder();
+                els.totalCount.textContent = notes.length;
+                els.statsCount.textContent = notes.length;
+            }
+
+            function renderCategoryFilter() {
+                const counts = {}; notes.forEach(n => { counts[n.categoryId] = (counts[n.categoryId]||0)+1; });
+                let html = `<span class="filter-tag ${activeCat===null?'active':''}" data-cat="">全部<span class="count">${notes.length}</span></span>`;
+                categories.forEach(c => {
+                    html += `<span class="filter-tag ${activeCat===c.id?'active':''}" data-cat="${c.id}">${esc(c.name)}<span class="count">${counts[c.id]||0}</span></span>`;
+                });
+                els.categoryFilter.innerHTML = html;
+                els.categoryFilter.querySelectorAll('.filter-tag').forEach(tag => {
+                    tag.onclick = () => {
+                        activeCat = tag.dataset.cat || null;
+                        if (currentView === 'notes') renderBookshelfOrSearch();
+                        renderCategoryFilter();
+                    };
+                });
+            }
+            function renderCategorySelect() { els.bookCategory.innerHTML = categories.map(c => `<option value="${c.id}">${esc(c.name)}</option>`).join(''); }
             function updateReminder() { const lb = localStorage.getItem('last_backup_month'); els.reminderBanner.style.display = (lb===curMonth())?'none':'flex'; }
 
             function exportData() {
                 const data = { version:1, exportedAt:new Date().toISOString(), categories, notes };
                 const blob = new Blob([JSON.stringify(data,null,2)],{type:'application/json'});
                 const a = document.createElement('a'); a.href = URL.createObjectURL(blob);
-                a.download = `读书笔记备份_${today()}.json`; a.click();
-                localStorage.setItem('last_backup_month', curMonth()); updateReminder(); toast('📤 备份已下载，本月提醒已解除');
+                a.download = `成长手册备份_${today()}.json`; a.click();
+                localStorage.setItem('last_backup_month', curMonth()); updateReminder(); toast('📤 备份已下载');
             }
             els.reminderExportBtn.addEventListener('click', exportData);
             els.exportBtn.addEventListener('click', exportData);
@@ -610,9 +689,9 @@
                     try {
                         const data = JSON.parse(ev.target.result);
                         if(!data.notes||!Array.isArray(data.notes)) throw new Error();
-                        if(!confirm(`导入 ${data.notes.length} 条笔记和 ${data.categories.length} 个分类？当前数据将被替换！`)) return;
+                        if(!confirm(`导入 ${data.notes.length} 条记录？当前数据将被替换！`)) return;
                         notes = data.notes; categories = data.categories;
-                        if(currentUser&&!currentUser.isAnonymous) { alert('云端导入需手动覆盖，请先在Firebase控制台中处理。数据已加载到本地视图。'); }
+                        if(currentUser&&!currentUser.isAnonymous) { alert('云端导入需手动覆盖，数据已加载到本地视图。'); }
                         else { saveLocal(); }
                         renderAll(); toast('📥 备份已导入');
                     } catch(err) { toast('❌ 文件格式不正确'); }
@@ -621,52 +700,52 @@
             });
 
             function findDuplicateNote(title) {
-                const normalized = title.trim().toLowerCase();
-                return notes.find(n => n.title.trim().toLowerCase() === normalized);
+                return notes.find(n => n.title.trim().toLowerCase() === title.trim().toLowerCase());
             }
 
             async function saveNote(formData) {
-                const { id, title, author, date, notesText, categoryId } = formData;
+                const { id, title, author, date, notesText, categoryId, readingDuration } = formData;
                 const rating = currentRating;
                 if (!id && !editingId) {
                     const duplicate = findDuplicateNote(title);
                     if (duplicate) {
-                        const shouldUpdate = confirm(`⚠️ 已存在同名书籍「${duplicate.title}」\n是否跳转到该记录进行更新？`);
-                        if (shouldUpdate) {
-                            closeModal();
-                            openEdit(duplicate.id);
-                            return;
+                        if (confirm(`⚠️ 已存在「${duplicate.title}」，是否跳转到该记录进行更新？`)) {
+                            closeModal(); openEdit(duplicate.id); return;
                         }
                     }
                 }
+                const noteData = {
+                    title, author, date, notes: notesText, categoryId,
+                    rating, readingDuration: readingDuration || 0,
+                };
                 if (currentUser && !currentUser.isAnonymous) {
                     const uid = currentUser.uid; const notesRef = db.collection('users').doc(uid).collection('notes');
                     if (id) {
-                        const existingNote = notes.find(n => n.id === id);
-                        const newReadCount = (existingNote?.readCount || 0) + 1;
-                        await notesRef.doc(id).update({
-                            title, author, date, notes: notesText, categoryId,
-                            rating, readCount: newReadCount,
-                            updatedAt: firebase.firestore.FieldValue.serverTimestamp()
-                        });
+                        const existing = notes.find(n => n.id === id);
+                        noteData.readCount = (existing?.readCount || 0) + 1;
+                        noteData.updatedAt = firebase.firestore.FieldValue.serverTimestamp();
+                        await notesRef.doc(id).update(noteData);
                     } else {
-                        const docRef = notesRef.doc();
-                        await docRef.set({
-                            title, author, date, notes: notesText, categoryId,
-                            rating, readCount: 1,
-                            createdAt: firebase.firestore.FieldValue.serverTimestamp(),
-                            updatedAt: firebase.firestore.FieldValue.serverTimestamp()
-                        });
+                        noteData.readCount = 1;
+                        noteData.createdAt = firebase.firestore.FieldValue.serverTimestamp();
+                        noteData.updatedAt = firebase.firestore.FieldValue.serverTimestamp();
+                        await notesRef.doc().set(noteData);
                     }
                 } else {
                     if (id) {
                         const idx = notes.findIndex(n => n.id === id);
                         if (idx >= 0) {
-                            const oldReadCount = notes[idx].readCount || 0;
-                            notes[idx] = { ...notes[idx], title, author, date, notes: notesText, categoryId, rating, readCount: oldReadCount + 1, updatedAt: Date.now() };
+                            noteData.readCount = (notes[idx].readCount || 0) + 1;
+                            noteData.updatedAt = Date.now();
+                            noteData.createdAt = notes[idx].createdAt;
+                            notes[idx] = { ...notes[idx], ...noteData };
                         }
                     } else {
-                        notes.unshift({ id: Date.now().toString(), title, author, date, notes: notesText, categoryId, rating, readCount: 1, createdAt: Date.now(), updatedAt: Date.now() });
+                        noteData.id = Date.now().toString();
+                        noteData.readCount = 1;
+                        noteData.createdAt = Date.now();
+                        noteData.updatedAt = Date.now();
+                        notes.unshift(noteData);
                     }
                     saveLocal(); renderAll();
                 }
@@ -684,8 +763,8 @@
             function openAdd() {
                 editingId = null; els.noteId.value = ''; els.bookTitle.value = ''; els.bookAuthor.value = '';
                 els.bookDate.value = today(); els.bookNotes.value = ''; els.bookCategory.value = 'uncategorized';
-                setStarRating(0);
-                els.modalTitle.textContent = '✍️ 添加笔记'; els.submitBtn.textContent = '💾 保存笔记';
+                els.readingDuration.value = ''; setStarRating(0);
+                els.modalTitle.textContent = '✍️ 添加记录'; els.submitBtn.textContent = '💾 保存';
                 els.categoryManager.style.display = 'none'; els.modalOverlay.style.display = 'flex';
                 document.body.style.overflow = 'hidden'; setTimeout(() => els.bookTitle.focus(), 300);
             }
@@ -695,8 +774,9 @@
                 editingId = id; els.noteId.value = note.id; els.bookTitle.value = note.title;
                 els.bookAuthor.value = note.author || ''; els.bookDate.value = note.date || '';
                 els.bookNotes.value = note.notes; els.bookCategory.value = note.categoryId || 'uncategorized';
+                els.readingDuration.value = note.readingDuration || '';
                 setStarRating(note.rating || 0);
-                els.modalTitle.textContent = '✏️ 编辑笔记'; els.submitBtn.textContent = '✅ 更新笔记';
+                els.modalTitle.textContent = '✏️ 编辑记录'; els.submitBtn.textContent = '✅ 更新';
                 els.categoryManager.style.display = 'none'; els.modalOverlay.style.display = 'flex';
                 document.body.style.overflow = 'hidden'; setTimeout(() => els.bookTitle.focus(), 300);
             }
@@ -709,7 +789,15 @@
 
             els.noteForm.addEventListener('submit', e => {
                 e.preventDefault();
-                const formData = { id: els.noteId.value || null, title: els.bookTitle.value.trim(), author: els.bookAuthor.value.trim(), date: els.bookDate.value, notesText: els.bookNotes.value.trim(), categoryId: els.bookCategory.value };
+                const formData = {
+                    id: els.noteId.value || null,
+                    title: els.bookTitle.value.trim(),
+                    author: els.bookAuthor.value.trim(),
+                    date: els.bookDate.value,
+                    notesText: els.bookNotes.value.trim(),
+                    categoryId: els.bookCategory.value,
+                    readingDuration: parseFloat(els.readingDuration.value) || 0
+                };
                 if (!formData.title || !formData.notesText) { toast('请填写书名和感想'); return; }
                 saveNote(formData);
             });
@@ -725,7 +813,7 @@
             async function delCat(id) {
                 if (id === 'uncategorized') { toast('不能删除未分类'); return; }
                 const cat = categories.find(c => c.id === id); if (!cat || cat.isDefault) { toast('预设分类不可删除'); return; }
-                if (!confirm(`删除分类"${cat.name}"？笔记将移入未分类。`)) return;
+                if (!confirm(`删除分类"${cat.name}"？记录将移入未分类。`)) return;
                 notes.forEach(n => { if (n.categoryId === id) n.categoryId = 'uncategorized'; });
                 if (currentUser && !currentUser.isAnonymous) {
                     const batch = db.batch();
@@ -750,6 +838,13 @@
             els.closeCategoryManagerBtn.onclick = () => els.categoryManager.style.display = 'none';
             els.addCategoryBtn.onclick = async () => { const name = els.newCategoryName.value.trim(); if (name && await addCat(name)) { els.newCategoryName.value = ''; renderCategoryManager(); renderCategorySelect(); renderCategoryFilter(); toast('新分类已添加'); } };
 
+            function renderCategoryManager() {
+                els.categoryListContainer.innerHTML = categories.map(c => `
+                    <div class="category-list-item"><span class="cat-color" style="background:${c.color};"></span><span class="cat-name">${esc(c.name)}</span><span class="cat-actions">${!c.isDefault?`<button class="rename-cat-btn" data-id="${c.id}">✏️</button><button class="delete-cat-btn" data-id="${c.id}">🗑️</button>`:'<span style="font-size:11px;color:#aaa;">系统</span>'}</span></div>`).join('');
+                els.categoryListContainer.querySelectorAll('.rename-cat-btn').forEach(b => { b.onclick = () => { const id=b.dataset.id; const oldName=categories.find(c=>c.id===id)?.name; const newName=prompt('新名称：',oldName); if(newName&&newName.trim()!==oldName) renameCat(id,newName.trim()); }; });
+                els.categoryListContainer.querySelectorAll('.delete-cat-btn').forEach(b => { b.onclick = () => delCat(b.dataset.id); });
+            }
+
             let searchTimer;
             els.searchInput.oninput = () => { searchTerm = els.searchInput.value.trim().toLowerCase(); els.searchClear.classList.toggle('visible', !!searchTerm); clearTimeout(searchTimer); searchTimer = setTimeout(renderAll, 200); };
             els.searchClear.onclick = () => { els.searchInput.value = ''; searchTerm = ''; els.searchClear.classList.remove('visible'); renderAll(); els.searchInput.focus(); };
@@ -762,7 +857,7 @@
 
             initStarInput();
             showAuth();
-            console.log('📚 读书笔记 · 评分与阅读次数已上线');
+            console.log('🌱 成长记录手册已上线');
         })();
     </script>
 </body>
