@@ -66,7 +66,6 @@
         .filter-tag.active { background:var(--accent); border-color:var(--accent); color:#fff; font-weight:600; box-shadow:0 2px 8px rgba(184,134,78,0.25); }
         .filter-tag .count { margin-left:4px; font-size:11px; opacity:0.8; }
 
-        /* 书架样式 */
         .bookshelf { display:flex; flex-direction:column; gap:24px; margin-top:8px; }
         .shelf-category { }
         .shelf-category-header { display:flex; align-items:center; gap:8px; margin-bottom:12px; padding:0 4px; }
@@ -488,6 +487,13 @@
             }
 
             function renderBookshelf() {
+                // 确保所有笔记都有有效分类
+                notes.forEach(n => {
+                    if (!n.categoryId || !categories.find(c => c.id === n.categoryId)) {
+                        n.categoryId = 'uncategorized';
+                    }
+                });
+
                 const grouped = {};
                 categories.forEach(c => grouped[c.id] = []);
                 notes.forEach(n => {
@@ -495,6 +501,7 @@
                     if (!grouped[catId]) grouped[catId] = [];
                     grouped[catId].push(n);
                 });
+
                 let html = '';
                 categories.forEach(c => {
                     const list = grouped[c.id] || [];
@@ -530,7 +537,9 @@
                     });
                     html += `</div></div>`;
                 });
+
                 els.bookshelf.innerHTML = html || '<div class="empty-state"><span class="empty-icon">📝</span><h3>还没有记录</h3><p>点击右下角 ＋ 添加第一本书吧</p></div>';
+
                 // 绑定点击事件
                 els.bookshelf.querySelectorAll('.book-item').forEach(item => {
                     item.addEventListener('click', function() {
@@ -582,10 +591,275 @@
                 els.notesList.querySelectorAll('.delete-btn').forEach(b => b.onclick = () => delNote(b.dataset.id));
             }
 
-            // 统计、导出、CRUD等函数保持不变（此处省略，与上一版完全相同）
-            // 为节省篇幅，其余函数请直接沿用上一版完整代码，此处仅展示修复后的renderBookshelf()
-            // 实际使用时，请将上一版完整代码中的renderBookshelf函数替换为上述修复版即可。
-            // ...（后续函数与上一版完全一致，此处从略）
+            function renderStats() {
+                const now = new Date(); const thisYear = now.getFullYear(); const thisMonth = String(now.getMonth()+1).padStart(2,'0'); const thisYM = `${thisYear}-${thisMonth}`;
+                const totalBooks = notes.length;
+                const monthNotes = notes.filter(n => n.date && n.date.startsWith(thisYM));
+                const yearNotes = notes.filter(n => n.date && n.date.startsWith(`${thisYear}-`));
+                const ratedNotes = notes.filter(n => n.rating);
+                const avgRating = ratedNotes.length ? (ratedNotes.reduce((s,n)=>s+n.rating,0)/ratedNotes.length).toFixed(1) : '--';
+                els.statCards.innerHTML = `
+                    <div class="stat-card"><div class="stat-number">${totalBooks}</div><div class="stat-label">📚 总记录</div></div>
+                    <div class="stat-card"><div class="stat-number">${monthNotes.length}</div><div class="stat-label">📅 本月新增</div></div>
+                    <div class="stat-card"><div class="stat-number">${yearNotes.length}</div><div class="stat-label">📆 今年累计</div></div>
+                    <div class="stat-card"><div class="stat-number">${avgRating}</div><div class="stat-label">⭐ 平均分</div><div class="stat-sub">${ratedNotes.length}本已评分</div></div>
+                `;
+                const last12Months = [];
+                for (let i = 11; i >= 0; i--) { const d = new Date(thisYear, now.getMonth()-i, 1); last12Months.push(`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}`); }
+                const monthlyCounts = {}; last12Months.forEach(ym => monthlyCounts[ym]=0);
+                notes.forEach(n => { if(n.date){ const ym = n.date.slice(0,7); if(monthlyCounts[ym]!==undefined) monthlyCounts[ym]++; } });
+                const maxCount = Math.max(1, ...Object.values(monthlyCounts));
+                els.chartBars.innerHTML = last12Months.map(ym => {
+                    const count = monthlyCounts[ym];
+                    return `<div class="chart-bar-wrap"><div class="chart-bar${count===0?' no-data':''}" style="height:${Math.max(4,(count/maxCount)*140)}px;">${count>0?`<span class="bar-value">${count}</span>`:''}</div><div class="chart-label">${getMonthLabel(ym)}</div></div>`;
+                }).join('');
+                const catCounts = {}; notes.forEach(n => { catCounts[n.categoryId] = (catCounts[n.categoryId]||0)+1; });
+                const sortedCats = [...categories].sort((a,b)=>(catCounts[b.id]||0)-(catCounts[a.id]||0));
+                const catMax = Math.max(1, ...Object.values(catCounts));
+                els.catStatList.innerHTML = sortedCats.map(c => {
+                    const cnt = catCounts[c.id]||0; const pct = totalBooks>0?Math.round(cnt/totalBooks*100):0;
+                    return `<div class="cat-stat-row"><span class="cat-stat-color" style="background:${c.color};"></span><span class="cat-stat-name">${esc(c.name)}</span><span class="cat-stat-count">${cnt}本</span><span class="cat-stat-bar-wrap"><span class="cat-stat-bar" style="width:${(cnt/catMax)*100}%;background:${c.color};"></span></span><span style="font-size:11px;color:#b8a898;width:32px;text-align:right;">${pct}%</span></div>`;
+                }).join('');
+                const booksByReadCount = [...notes].sort((a,b) => (b.readCount||0) - (a.readCount||0)).slice(0,5);
+                els.topBooksList.innerHTML = booksByReadCount.length ? booksByReadCount.map((n,i) => `
+                    <div class="top-item"><span class="top-rank">${i+1}</span><span class="top-name">📖 ${esc(n.title)}</span><span class="top-count">${n.readCount||0}次</span></div>
+                `).join('') : '<div class="top-item"><span class="top-name">暂无数据</span></div>';
+                const authorReadMap = {};
+                notes.forEach(n => {
+                    const author = n.author && n.author.trim() ? n.author.trim() : '未知作者';
+                    authorReadMap[author] = (authorReadMap[author]||0) + (n.readCount||0);
+                });
+                const topAuthors = Object.entries(authorReadMap).sort((a,b) => b[1]-a[1]).slice(0,5);
+                els.topAuthorsList.innerHTML = topAuthors.length ? topAuthors.map((a,i) => `
+                    <div class="top-item"><span class="top-rank">${i+1}</span><span class="top-name">✒️ ${esc(a[0])}</span><span class="top-count">${a[1]}次</span></div>
+                `).join('') : '<div class="top-item"><span class="top-name">暂无数据</span></div>';
+                if (monthNotes.length === 0) {
+                    els.monthlyBooksContainer.innerHTML = '<p style="color:var(--text-secondary);text-align:center;padding:8px;">本月暂无记录 📭</p>';
+                } else {
+                    els.monthlyBooksContainer.innerHTML = monthNotes.sort((a,b)=>(a.date<b.date?1:-1)).map(n => {
+                        const cat = categories.find(c=>c.id===n.categoryId);
+                        return `<div class="monthly-book-item"><span class="mbi-date">${n.date?n.date.slice(5):'--'}</span><span>📖 ${esc(n.title)}${n.author?' - '+esc(n.author):''}</span>${cat?`<span class="category-badge" style="background:${cat.color}20;color:${cat.color};border:1px solid ${cat.color}40;font-size:10px;margin-left:auto;flex-shrink:0;">${esc(cat.name)}</span>`:''}</div>`;
+                    }).join('');
+                }
+            }
+
+            function renderAll() {
+                renderCategoryFilter();
+                renderCategorySelect();
+                if (currentView === 'notes') {
+                    renderBookshelfOrSearch();
+                } else {
+                    renderStats();
+                }
+                updateReminder();
+                els.totalCount.textContent = notes.length;
+                els.statsCount.textContent = notes.length;
+            }
+
+            function renderCategoryFilter() {
+                const counts = {}; notes.forEach(n => { counts[n.categoryId] = (counts[n.categoryId]||0)+1; });
+                let html = `<span class="filter-tag ${activeCat===null?'active':''}" data-cat="">全部<span class="count">${notes.length}</span></span>`;
+                categories.forEach(c => {
+                    html += `<span class="filter-tag ${activeCat===c.id?'active':''}" data-cat="${c.id}">${esc(c.name)}<span class="count">${counts[c.id]||0}</span></span>`;
+                });
+                els.categoryFilter.innerHTML = html;
+                els.categoryFilter.querySelectorAll('.filter-tag').forEach(tag => {
+                    tag.onclick = () => {
+                        activeCat = tag.dataset.cat || null;
+                        if (currentView === 'notes') renderBookshelfOrSearch();
+                        renderCategoryFilter();
+                    };
+                });
+            }
+            function renderCategorySelect() { els.bookCategory.innerHTML = categories.map(c => `<option value="${c.id}">${esc(c.name)}</option>`).join(''); }
+            function updateReminder() { const lb = localStorage.getItem('last_backup_month'); els.reminderBanner.style.display = (lb===curMonth())?'none':'flex'; }
+
+            function exportData() {
+                const data = { version:1, exportedAt:new Date().toISOString(), categories, notes };
+                const blob = new Blob([JSON.stringify(data,null,2)],{type:'application/json'});
+                const a = document.createElement('a'); a.href = URL.createObjectURL(blob);
+                a.download = `成长手册备份_${today()}.json`; a.click();
+                localStorage.setItem('last_backup_month', curMonth()); updateReminder(); toast('📤 备份已下载');
+            }
+            els.reminderExportBtn.addEventListener('click', exportData);
+            els.exportBtn.addEventListener('click', exportData);
+            els.importBtn.addEventListener('click', () => els.importFileInput.click());
+            els.importFileInput.addEventListener('change', e => {
+                const file = e.target.files[0]; if(!file) return;
+                const reader = new FileReader();
+                reader.onload = ev => {
+                    try {
+                        const data = JSON.parse(ev.target.result);
+                        if(!data.notes||!Array.isArray(data.notes)) throw new Error();
+                        if(!confirm(`导入 ${data.notes.length} 条记录？当前数据将被替换！`)) return;
+                        notes = data.notes; categories = data.categories;
+                        if(currentUser&&!currentUser.isAnonymous) { alert('云端导入需手动覆盖，数据已加载到本地视图。'); }
+                        else { saveLocal(); }
+                        renderAll(); toast('📥 备份已导入');
+                    } catch(err) { toast('❌ 文件格式不正确'); }
+                };
+                reader.readAsText(file); els.importFileInput.value = '';
+            });
+
+            function findDuplicateNote(title) {
+                return notes.find(n => n.title.trim().toLowerCase() === title.trim().toLowerCase());
+            }
+
+            async function saveNote(formData) {
+                const { id, title, author, date, notesText, categoryId, readingDuration } = formData;
+                const rating = currentRating;
+                if (!id && !editingId) {
+                    const duplicate = findDuplicateNote(title);
+                    if (duplicate) {
+                        if (confirm(`⚠️ 已存在「${duplicate.title}」，是否跳转到该记录进行更新？`)) {
+                            closeModal(); openEdit(duplicate.id); return;
+                        }
+                    }
+                }
+                const noteData = {
+                    title, author, date, notes: notesText, categoryId,
+                    rating, readingDuration: readingDuration || 0,
+                };
+                if (currentUser && !currentUser.isAnonymous) {
+                    const uid = currentUser.uid; const notesRef = db.collection('users').doc(uid).collection('notes');
+                    if (id) {
+                        const existing = notes.find(n => n.id === id);
+                        noteData.readCount = (existing?.readCount || 0) + 1;
+                        noteData.updatedAt = firebase.firestore.FieldValue.serverTimestamp();
+                        await notesRef.doc(id).update(noteData);
+                    } else {
+                        noteData.readCount = 1;
+                        noteData.createdAt = firebase.firestore.FieldValue.serverTimestamp();
+                        noteData.updatedAt = firebase.firestore.FieldValue.serverTimestamp();
+                        await notesRef.doc().set(noteData);
+                    }
+                } else {
+                    if (id) {
+                        const idx = notes.findIndex(n => n.id === id);
+                        if (idx >= 0) {
+                            noteData.readCount = (notes[idx].readCount || 0) + 1;
+                            noteData.updatedAt = Date.now();
+                            noteData.createdAt = notes[idx].createdAt;
+                            notes[idx] = { ...notes[idx], ...noteData };
+                        }
+                    } else {
+                        noteData.id = Date.now().toString();
+                        noteData.readCount = 1;
+                        noteData.createdAt = Date.now();
+                        noteData.updatedAt = Date.now();
+                        notes.unshift(noteData);
+                    }
+                    saveLocal(); renderAll();
+                }
+                if (els.modalOverlay.style.display === 'flex') closeModal();
+            }
+
+            async function delNote(id) {
+                const note = notes.find(n => n.id === id); if (!note) return;
+                if (!confirm(`删除"${note.title.slice(0,20)}"？`)) return;
+                if (currentUser && !currentUser.isAnonymous) { await db.collection('users').doc(currentUser.uid).collection('notes').doc(id).delete(); }
+                else { notes = notes.filter(n => n.id !== id); saveLocal(); renderAll(); }
+                toast('🗑 已删除');
+            }
+
+            function openAdd() {
+                editingId = null; els.noteId.value = ''; els.bookTitle.value = ''; els.bookAuthor.value = '';
+                els.bookDate.value = today(); els.bookNotes.value = ''; els.bookCategory.value = 'uncategorized';
+                els.readingDuration.value = ''; setStarRating(0);
+                els.modalTitle.textContent = '✍️ 添加记录'; els.submitBtn.textContent = '💾 保存';
+                els.categoryManager.style.display = 'none'; els.modalOverlay.style.display = 'flex';
+                document.body.style.overflow = 'hidden'; setTimeout(() => els.bookTitle.focus(), 300);
+            }
+
+            function openEdit(id) {
+                const note = notes.find(n => n.id === id); if (!note) return;
+                editingId = id; els.noteId.value = note.id; els.bookTitle.value = note.title;
+                els.bookAuthor.value = note.author || ''; els.bookDate.value = note.date || '';
+                els.bookNotes.value = note.notes; els.bookCategory.value = note.categoryId || 'uncategorized';
+                els.readingDuration.value = note.readingDuration || '';
+                setStarRating(note.rating || 0);
+                els.modalTitle.textContent = '✏️ 编辑记录'; els.submitBtn.textContent = '✅ 更新';
+                els.categoryManager.style.display = 'none'; els.modalOverlay.style.display = 'flex';
+                document.body.style.overflow = 'hidden'; setTimeout(() => els.bookTitle.focus(), 300);
+            }
+
+            function closeModal() {
+                els.modalOverlay.classList.add('closing');
+                setTimeout(() => { els.modalOverlay.style.display = 'none'; els.modalOverlay.classList.remove('closing'); document.body.style.overflow = ''; }, 250);
+                editingId = null; els.noteForm.reset(); els.categoryManager.style.display = 'none';
+            }
+
+            els.noteForm.addEventListener('submit', e => {
+                e.preventDefault();
+                const formData = {
+                    id: els.noteId.value || null,
+                    title: els.bookTitle.value.trim(),
+                    author: els.bookAuthor.value.trim(),
+                    date: els.bookDate.value,
+                    notesText: els.bookNotes.value.trim(),
+                    categoryId: els.bookCategory.value,
+                    readingDuration: parseFloat(els.readingDuration.value) || 0
+                };
+                if (!formData.title || !formData.notesText) { toast('请填写书名和感想'); return; }
+                saveNote(formData);
+            });
+
+            async function addCat(name) {
+                const trimmed = name.trim(); if (!trimmed) return false;
+                if (categories.some(c => c.name === trimmed)) { toast('分类已存在'); return false; }
+                const newCat = { id: 'cat_'+Date.now(), name: trimmed, color: ['#b8864e','#8b5e3c','#5d7b6f','#7b6b8a','#c47e5a','#6d8a7d'][Math.floor(Math.random()*6)], isDefault: false };
+                if (currentUser && !currentUser.isAnonymous) { await db.collection('users').doc(currentUser.uid).collection('categories').doc(newCat.id).set(newCat); }
+                else { categories.push(newCat); saveLocal(); renderAll(); }
+                return true;
+            }
+            async function delCat(id) {
+                if (id === 'uncategorized') { toast('不能删除未分类'); return; }
+                const cat = categories.find(c => c.id === id); if (!cat || cat.isDefault) { toast('预设分类不可删除'); return; }
+                if (!confirm(`删除分类"${cat.name}"？记录将移入未分类。`)) return;
+                notes.forEach(n => { if (n.categoryId === id) n.categoryId = 'uncategorized'; });
+                if (currentUser && !currentUser.isAnonymous) {
+                    const batch = db.batch();
+                    notes.forEach(n => batch.update(db.collection('users').doc(currentUser.uid).collection('notes').doc(n.id), { categoryId: 'uncategorized' }));
+                    batch.delete(db.collection('users').doc(currentUser.uid).collection('categories').doc(id));
+                    await batch.commit();
+                } else { saveLocal(); categories = categories.filter(c => c.id !== id); renderAll(); }
+                toast('已删除分类');
+            }
+            async function renameCat(id, newName) {
+                if (!newName || categories.some(c => c.name === newName && c.id !== id)) { toast('名称重复或无效'); return; }
+                const cat = categories.find(c => c.id === id); if (!cat) return;
+                if (currentUser && !currentUser.isAnonymous) { await db.collection('users').doc(currentUser.uid).collection('categories').doc(id).update({ name: newName }); }
+                else { cat.name = newName; saveLocal(); renderAll(); }
+                toast('分类已重命名');
+            }
+
+            els.fabBtn.onclick = openAdd;
+            els.modalOverlay.onclick = e => { if (e.target === els.modalOverlay) closeModal(); };
+            els.cancelBtn.onclick = closeModal;
+            els.manageCategoryBtn.onclick = () => { const v = els.categoryManager.style.display === 'block'; els.categoryManager.style.display = v ? 'none' : 'block'; if (!v) renderCategoryManager(); };
+            els.closeCategoryManagerBtn.onclick = () => els.categoryManager.style.display = 'none';
+            els.addCategoryBtn.onclick = async () => { const name = els.newCategoryName.value.trim(); if (name && await addCat(name)) { els.newCategoryName.value = ''; renderCategoryManager(); renderCategorySelect(); renderCategoryFilter(); toast('新分类已添加'); } };
+
+            function renderCategoryManager() {
+                els.categoryListContainer.innerHTML = categories.map(c => `
+                    <div class="category-list-item"><span class="cat-color" style="background:${c.color};"></span><span class="cat-name">${esc(c.name)}</span><span class="cat-actions">${!c.isDefault?`<button class="rename-cat-btn" data-id="${c.id}">✏️</button><button class="delete-cat-btn" data-id="${c.id}">🗑️</button>`:'<span style="font-size:11px;color:#aaa;">系统</span>'}</span></div>`).join('');
+                els.categoryListContainer.querySelectorAll('.rename-cat-btn').forEach(b => { b.onclick = () => { const id=b.dataset.id; const oldName=categories.find(c=>c.id===id)?.name; const newName=prompt('新名称：',oldName); if(newName&&newName.trim()!==oldName) renameCat(id,newName.trim()); }; });
+                els.categoryListContainer.querySelectorAll('.delete-cat-btn').forEach(b => { b.onclick = () => delCat(b.dataset.id); });
+            }
+
+            let searchTimer;
+            els.searchInput.oninput = () => { searchTerm = els.searchInput.value.trim().toLowerCase(); els.searchClear.classList.toggle('visible', !!searchTerm); clearTimeout(searchTimer); searchTimer = setTimeout(renderAll, 200); };
+            els.searchClear.onclick = () => { els.searchInput.value = ''; searchTerm = ''; els.searchClear.classList.remove('visible'); renderAll(); els.searchInput.focus(); };
+
+            document.addEventListener('keydown', e => {
+                if (e.key === 'Escape' && els.modalOverlay.style.display === 'flex') closeModal();
+                if ((e.ctrlKey || e.metaKey) && e.key === 'n') { e.preventDefault(); if (els.modalOverlay.style.display !== 'flex') openAdd(); }
+                if ((e.ctrlKey || e.metaKey) && e.key === 'k') { e.preventDefault(); els.searchInput.focus(); }
+            });
+
+            initStarInput();
+            showAuth();
+            console.log('🌱 成长记录手册已上线');
         })();
     </script>
 </body>
