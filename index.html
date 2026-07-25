@@ -462,6 +462,8 @@
                     els.bookshelf.style.display = 'none'; els.notesList.style.display = 'none'; els.statsView.classList.add('active');
                     renderStats();
                 }
+                els.totalCount.textContent = notes.length;
+                els.statsCount.textContent = notes.length;
             }
 
             function renderBookshelfOrSearch() {
@@ -472,6 +474,8 @@
                     els.bookshelf.style.display = ''; els.notesList.style.display = 'none';
                     renderBookshelf();
                 }
+                els.totalCount.textContent = notes.length;
+                els.statsCount.textContent = notes.length;
             }
 
             function renderBookshelf() {
@@ -523,20 +527,22 @@
                 filtered.sort((a,b) => (b.createdAt||0) - (a.createdAt||0));
                 if (filtered.length === 0) {
                     els.notesList.innerHTML = '<div class="empty-state"><span class="empty-icon">🔍</span><h3>没有匹配的记录</h3></div>';
-                    return;
+                } else {
+                    els.notesList.innerHTML = filtered.map((n,i) => {
+                        const cat = categories.find(c => c.id === n.categoryId) || { name: '未分类', color: '#b8a898' };
+                        const rating = n.rating || 0;
+                        const readCount = (n.readings && Array.isArray(n.readings)) ? n.readings.length : 0;
+                        const last = (n.readings && n.readings.length > 0) ? [...n.readings].sort((a,b) => b.date.localeCompare(a.date))[0] : null;
+                        const readTime = n.readingDuration ? `${n.readingDuration}h` : '';
+                        let starsHtml = '';
+                        for (let s=1; s<=5; s++) starsHtml += `<span class="star${s <= rating ? ' filled' : ''}">★</span>`;
+                        return `<div class="note-card"><div class="card-header"><span class="book-icon">📖</span><div class="book-info"><div class="book-title">${hl(n.title,searchTerm)}</div>${n.author?`<div class="book-author">${hl(n.author,searchTerm)}</div>`:''}<div class="card-meta-row"><span class="category-badge" style="background:${cat.color}20;color:${cat.color};border:1px solid ${cat.color}40;">${esc(cat.name)}</span><span class="star-rating">${starsHtml}</span><span class="read-count">📖 ${readCount}次</span>${readTime ? `<span>⏱️ ${readTime}</span>` : ''}</div></div><span class="card-date">${last ? fmtDate(last.date) : ''}</span></div><div class="card-notes">${last ? hl(last.notes, searchTerm) : ''}</div><div class="card-actions"><button class="btn-sm edit-btn" data-id="${n.id}">✏️</button><button class="btn-sm delete-btn" data-id="${n.id}">🗑</button></div></div>`;
+                    }).join('');
+                    els.notesList.querySelectorAll('.edit-btn').forEach(b => b.onclick = () => openEdit(b.dataset.id));
+                    els.notesList.querySelectorAll('.delete-btn').forEach(b => b.onclick = () => delNote(b.dataset.id));
                 }
-                els.notesList.innerHTML = filtered.map((n,i) => {
-                    const cat = categories.find(c => c.id === n.categoryId) || { name: '未分类', color: '#b8a898' };
-                    const rating = n.rating || 0;
-                    const readCount = (n.readings && Array.isArray(n.readings)) ? n.readings.length : 0;
-                    const last = (n.readings && n.readings.length > 0) ? [...n.readings].sort((a,b) => b.date.localeCompare(a.date))[0] : null;
-                    const readTime = n.readingDuration ? `${n.readingDuration}h` : '';
-                    let starsHtml = '';
-                    for (let s=1; s<=5; s++) starsHtml += `<span class="star${s <= rating ? ' filled' : ''}">★</span>`;
-                    return `<div class="note-card"><div class="card-header"><span class="book-icon">📖</span><div class="book-info"><div class="book-title">${hl(n.title,searchTerm)}</div>${n.author?`<div class="book-author">${hl(n.author,searchTerm)}</div>`:''}<div class="card-meta-row"><span class="category-badge" style="background:${cat.color}20;color:${cat.color};border:1px solid ${cat.color}40;">${esc(cat.name)}</span><span class="star-rating">${starsHtml}</span><span class="read-count">📖 ${readCount}次</span>${readTime ? `<span>⏱️ ${readTime}</span>` : ''}</div></div><span class="card-date">${last ? fmtDate(last.date) : ''}</span></div><div class="card-notes">${last ? hl(last.notes, searchTerm) : ''}</div><div class="card-actions"><button class="btn-sm edit-btn" data-id="${n.id}">✏️</button><button class="btn-sm delete-btn" data-id="${n.id}">🗑</button></div></div>`;
-                }).join('');
-                els.notesList.querySelectorAll('.edit-btn').forEach(b => b.onclick = () => openEdit(b.dataset.id));
-                els.notesList.querySelectorAll('.delete-btn').forEach(b => b.onclick = () => delNote(b.dataset.id));
+                els.totalCount.textContent = notes.length;
+                els.statsCount.textContent = notes.length;
             }
 
             function renderStats() {
@@ -547,20 +553,46 @@
                 const ratedNotes = notes.filter(n => n.rating);
                 const avgRating = ratedNotes.length ? (ratedNotes.reduce((s,n)=>s+n.rating,0)/ratedNotes.length).toFixed(1) : '--';
                 els.statCards.innerHTML = `<div class="stat-card"><div class="stat-number">${totalBooks}</div><div class="stat-label">📚 总册数</div></div><div class="stat-card"><div class="stat-number">${monthReads}</div><div class="stat-label">📅 本月阅读</div></div><div class="stat-card"><div class="stat-number">${yearReads}</div><div class="stat-label">📆 今年阅读</div></div><div class="stat-card"><div class="stat-number">${avgRating}</div><div class="stat-label">⭐ 平均分</div></div>`;
-                // 简单的分类统计
+
+                // 近12个月趋势
+                const last12Months = [];
+                for (let i = 11; i >= 0; i--) {
+                    const d = new Date(thisYear, now.getMonth()-i, 1);
+                    last12Months.push(`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}`);
+                }
+                const monthlyCounts = {};
+                last12Months.forEach(ym => monthlyCounts[ym] = 0);
+                notes.forEach(n => {
+                    (n.readings||[]).forEach(r => {
+                        if(r.date) {
+                            const ym = r.date.slice(0,7);
+                            if (monthlyCounts[ym] !== undefined) monthlyCounts[ym]++;
+                        }
+                    });
+                });
+                const maxCount = Math.max(1, ...Object.values(monthlyCounts));
+                els.chartBars.innerHTML = last12Months.map(ym => {
+                    const count = monthlyCounts[ym];
+                    return `<div class="chart-bar-wrap"><div class="chart-bar${count===0?' no-data':''}" style="height:${Math.max(4,(count/maxCount)*140)}px;">${count>0?`<span class="bar-value">${count}</span>`:''}</div><div class="chart-label">${getMonthLabel(ym)}</div></div>`;
+                }).join('');
+
+                // 分类分布
                 const catCounts = {}; notes.forEach(n => { catCounts[n.categoryId] = (catCounts[n.categoryId]||0)+1; });
                 els.catStatList.innerHTML = categories.map(c => {
                     const cnt = catCounts[c.id]||0;
                     return `<div class="cat-stat-row"><span class="cat-stat-color" style="background:${c.color};"></span><span class="cat-stat-name">${esc(c.name)}</span><span class="cat-stat-count">${cnt}本</span></div>`;
                 }).join('');
-                // 阅读次数最多书籍
+
+                // 阅读次数最多的书籍
                 const topBooks = [...notes].sort((a,b) => (b.readings?.length||0) - (a.readings?.length||0)).slice(0,5);
-                els.topBooksList.innerHTML = topBooks.map((n,i) => `<div class="top-item"><span class="top-rank">${i+1}</span><span class="top-name">📖 ${esc(n.title)}</span><span class="top-count">${n.readings?.length||0}次</span></div>`).join('');
-                // 作者
+                els.topBooksList.innerHTML = topBooks.length ? topBooks.map((n,i) => `<div class="top-item"><span class="top-rank">${i+1}</span><span class="top-name">📖 ${esc(n.title)}</span><span class="top-count">${n.readings?.length||0}次</span></div>`).join('') : '<div class="top-item">暂无数据</div>';
+
+                // 作者排名
                 const authorMap = {};
                 notes.forEach(n => { const a = n.author?.trim() || '未知'; authorMap[a] = (authorMap[a]||0)+(n.readings?.length||0); });
                 const topAuthors = Object.entries(authorMap).sort((a,b)=>b[1]-a[1]).slice(0,5);
-                els.topAuthorsList.innerHTML = topAuthors.map((a,i) => `<div class="top-item"><span class="top-rank">${i+1}</span><span class="top-name">✒️ ${esc(a[0])}</span><span class="top-count">${a[1]}次</span></div>`).join('');
+                els.topAuthorsList.innerHTML = topAuthors.length ? topAuthors.map((a,i) => `<div class="top-item"><span class="top-rank">${i+1}</span><span class="top-name">✒️ ${esc(a[0])}</span><span class="top-count">${a[1]}次</span></div>`).join('') : '<div class="top-item">暂无数据</div>';
+
                 // 本月阅读书目
                 const monthBooks = notes.filter(n => n.readings?.some(r => r.date.startsWith(thisYM)));
                 els.monthlyBooksContainer.innerHTML = monthBooks.length ? monthBooks.map(n => `<div class="monthly-book-item"><span>📖 ${esc(n.title)}</span></div>`).join('') : '<p style="color:var(--text-secondary);">本月暂无记录</p>';
@@ -711,7 +743,6 @@
                 toast('🗑 已删除');
             }
 
-            // 分类管理
             async function addCat(name) {
                 const trimmed = name.trim(); if (!trimmed) return false;
                 if (categories.some(c => c.name === trimmed)) { toast('分类已存在'); return false; }
@@ -748,7 +779,6 @@
                 els.categoryListContainer.querySelectorAll('.delete-cat-btn').forEach(b => { b.onclick = () => delCat(b.dataset.id); });
             }
 
-            // 事件绑定
             els.fabBtn.onclick = resetForm;
             els.modalOverlay.onclick = e => { if (e.target === els.modalOverlay) closeModal(); };
             els.cancelBtn.onclick = closeModal;
